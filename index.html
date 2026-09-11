@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0A0F1E">
+<meta name="description" content="A gamified chemistry sketchbook — kitchen experiments, an ocean liner's engine room, and retro platformer physics, all exploring physical vs chemical change.">
+<meta property="og:title" content="Chem Lab Logbook">
+<meta property="og:description" content="15 hands-on chemistry missions across 3 worlds, with sketching and Anki flashcard export.">
+<meta property="og:type" content="website">
+<title>Chem Lab Logbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ship chrome (dark navy + gold), matching J.J.'s Sketchbooks collection */
+    --navy:#0A0F1E;
+    --navy-card:#141B2E;
+    --navy-card-alt:#1B2438;
+    --navy-border:#2A3550;
+    --gold:#E3B341;
+    --gold-dark:#C1902E;
+    --text-light:#F3EFE3;
+    --text-muted:#93A0B8;
+    --sage:#6FA284;
+    --sage-dark:#4C7A62;
+    --tomato:#D9724B;
+    --steel:#5B93B0;
+    --kitchen-accent:#E0954A;
+    --titanic-accent:#5B93B0;
+    --pixel-accent:#D64550;
+
+    /* paper pages (diagrams / sketch canvases / interactive step cards) */
+    --paper:#FAF3E3;
+    --paper-card:#FFFDF8;
+    --ink:#2E2A24;
+    --ink-soft:#6B6459;
+    --line:#E6DCC6;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--navy);color:var(--text-light);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-user-select:none;user-select:none;overscroll-behavior:none;}
+  h1,h2,h3,.display{font-family:'Baloo 2',sans-serif;font-weight:700;}
+  button{font-family:inherit;}
+  #app{max-width:640px;margin:0 auto;min-height:100vh;padding:20px 18px 60px;}
+
+  /* ---------- HERO ---------- */
+  .hero{display:flex;justify-content:center;margin:6px 0 18px;}
+  .hero svg{width:150px;height:150px;}
+  .kicker{display:flex;justify-content:center;margin-bottom:14px;}
+  .kicker-pill{border:1.5px solid var(--gold-dark);color:var(--gold);background:rgba(227,179,65,0.08);
+    font-size:12px;font-weight:700;letter-spacing:1.5px;padding:8px 16px;border-radius:99px;}
+
+  /* ---------- HEADER ---------- */
+  .top{text-align:center;margin-bottom:6px;}
+  .top h1{font-size:28px;margin:0;line-height:1.15;color:var(--text-light);}
+  .top .sub{color:var(--gold);font-weight:700;font-size:15px;margin-top:8px;}
+  .top .sub2{color:var(--text-muted);font-size:14px;margin-top:8px;line-height:1.5;max-width:420px;margin-left:auto;margin-right:auto;}
+
+  .progress-wrap{margin:20px 0 16px;}
+  .progress-track{background:var(--navy-card-alt);border-radius:99px;height:14px;overflow:hidden;border:1px solid var(--navy-border);}
+  .progress-fill{background:linear-gradient(90deg,var(--gold-dark),var(--gold));height:100%;border-radius:99px;transition:width .4s ease;}
+  .progress-label{font-size:13px;color:var(--text-muted);margin-top:6px;font-weight:600;}
+  .progress-top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .progress-top-row .progress-label{margin-top:0;}
+  .xp-pill{background:rgba(227,179,65,0.12);border:1px solid var(--gold-dark);color:var(--gold);font-weight:700;font-size:13px;
+    padding:5px 12px;border-radius:99px;white-space:nowrap;}
+
+  .badgerow{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 18px;margin-bottom:2px;}
+  .badgechip{flex-shrink:0;width:78px;text-align:center;padding:10px 6px;border-radius:14px;
+    border:1.5px solid var(--navy-border);background:var(--navy-card);}
+  .badgechip.earned{border-color:var(--gold);background:rgba(227,179,65,0.1);}
+  .badgechip .bemoji{font-size:24px;display:block;margin-bottom:4px;filter:grayscale(1);opacity:0.35;}
+  .badgechip.earned .bemoji{filter:none;opacity:1;}
+  .badgechip .blabel{font-size:10px;font-weight:700;color:var(--text-muted);line-height:1.2;}
+  .badgechip.earned .blabel{color:var(--gold);}
+
+  /* ---------- ZONE CARDS (logbook-style outer cards) ---------- */
+  .zonesection{position:relative;margin-bottom:20px;background:var(--navy-card);
+    border:1px solid var(--navy-border);border-radius:22px;padding:20px 18px 18px 26px;overflow:hidden;}
+  .zonesection::before{content:'';position:absolute;left:0;top:0;bottom:0;width:9px;
+    background-image:repeating-linear-gradient(to bottom, var(--zone-accent,var(--gold)) 0 10px, transparent 10px 20px);}
+  .zonesection::after{content:'';position:absolute;top:16px;right:16px;width:9px;height:9px;
+    border-radius:50%;background:var(--gold);}
+  .zonesection.zone-kitchen{--zone-accent:var(--kitchen-accent);}
+  .zonesection.zone-titanic{--zone-accent:var(--titanic-accent);}
+  .zonesection.zone-pixel{--zone-accent:var(--pixel-accent);}
+  .zoneheader{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;}
+  .zoneheader h2{font-size:18px;margin:0;color:var(--text-light);}
+  .zoneheader .zprog{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap;}
+  .zonesub{font-size:13px;color:var(--text-muted);margin:0 0 14px;line-height:1.4;}
+
+  /* ---------- HOME GRID (mission tiles inside a zone card) ---------- */
+  .grid{display:flex;flex-direction:column;gap:10px;}
+  .rcard{background:var(--navy-card-alt);border:1px solid var(--navy-border);border-radius:14px;
+    padding:14px 14px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .12s ease;}
+  .rcard:active{transform:scale(0.98);}
+  .rcard .emoji{font-size:30px;flex-shrink:0;width:42px;text-align:center;}
+  .rcard .info{flex:1;min-width:0;}
+  .rcard .info h3{margin:0 0 3px;font-size:15px;color:var(--text-light);font-family:'Baloo 2',sans-serif;font-weight:600;}
+  .rcard .info p{margin:0;font-size:12px;color:var(--text-muted);}
+  .badge{font-size:11px;font-weight:700;padding:5px 10px;border-radius:99px;white-space:nowrap;flex-shrink:0;}
+  .badge.notstarted{background:rgba(255,255,255,0.06);color:var(--text-muted);}
+  .badge.inprogress{background:rgba(227,179,65,0.14);color:var(--gold);}
+  .badge.done{background:rgba(111,162,132,0.18);color:var(--sage);}
+  .rcard .statuswrap{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+  .trafficdot{width:11px;height:11px;border-radius:50%;}
+  .trafficdot.green{background:var(--sage);}
+  .trafficdot.yellow{background:var(--gold);}
+
+  .cookbookbtn{width:100%;background:var(--navy-card);border:1.5px solid var(--gold-dark);color:var(--gold);
+    border-radius:14px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:18px;}
+  .cookbookentry{margin-bottom:22px;padding-bottom:22px;border-bottom:1.5px dashed var(--navy-border);}
+  .cookbookentry:last-child{border-bottom:none;}
+  .zoneflag{font-size:11px;font-weight:700;color:var(--gold);text-transform:none;margin-bottom:2px;}
+
+  /* ---------- MISSION VIEW ---------- */
+  .missionview{display:none;}
+  .missionview.active{display:block;}
+  .backbtn{background:none;border:none;color:var(--text-muted);font-size:15px;font-weight:600;
+    padding:8px 0;margin-bottom:6px;cursor:pointer;display:flex;align-items:center;gap:5px;}
+  .mtitle{font-size:22px;margin:2px 0 4px;color:var(--text-light);}
+  .mstory{font-size:14px;color:var(--text-muted);margin:0 0 16px;line-height:1.4;}
+
+  /* diagrams stay on cream "paper" pages, like a real sketchbook pasted into the dark UI */
+  .diagram-box{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px;margin-bottom:16px;box-shadow:0 6px 16px rgba(0,0,0,0.35);}
+  .diagram-box svg{width:100%;height:auto;display:block;}
+
+  .dots{display:flex;gap:7px;justify-content:center;margin-bottom:16px;}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--navy-border);}
+  .dot.on{background:var(--gold);}
+  .dot.pastdone{background:var(--sage);}
+
+  .stepcard{background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);
+    padding:20px 18px;}
+  .stepkicker{font-size:12px;font-weight:700;letter-spacing:0.5px;color:var(--gold);margin:0 0 6px;}
+  .stepq{font-size:18px;margin:0 0 16px;line-height:1.3;color:var(--text-light);}
+
+  .chipgrid{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:18px;}
+  .chip{border:1.5px solid var(--navy-border);background:var(--navy-card-alt);border-radius:99px;padding:10px 16px;
+    font-size:14px;font-weight:600;cursor:pointer;color:var(--text-light);}
+  .chip.sel{border-color:var(--gold);background:rgba(227,179,65,0.14);color:var(--gold);}
+
+  .presetgrid{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+  .preset{text-align:left;border:1.5px solid var(--navy-border);background:var(--navy-card-alt);border-radius:14px;
+    padding:13px 15px;font-size:15px;font-weight:600;cursor:pointer;color:var(--text-light);}
+  .preset.sel{border-color:var(--gold);background:rgba(227,179,65,0.14);}
+  .ownwrap{margin-top:4px;}
+  .ownwrap label{font-size:12px;color:var(--text-muted);font-weight:600;}
+  .ownwrap textarea{width:100%;margin-top:6px;border:1.5px solid var(--navy-border);border-radius:12px;
+    padding:10px 12px;font-size:15px;font-family:inherit;resize:none;background:var(--navy-card-alt);color:var(--text-light);}
+
+  .sentence{font-size:17px;line-height:1.7;margin-bottom:16px;padding:14px;background:var(--paper);color:var(--ink);
+    border:1.5px dashed var(--gold-dark);border-radius:12px;}
+  .blank{display:inline-block;min-width:70px;border-bottom:2.5px solid var(--gold-dark);
+    padding:0 4px;font-weight:700;color:var(--gold-dark);}
+  .wordbank{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:18px;}
+  .word{border:1.5px solid var(--navy-border);background:var(--navy-card-alt);border-radius:10px;padding:9px 14px;
+    font-size:14px;font-weight:600;cursor:pointer;color:var(--text-light);}
+  .word.sel{border-color:var(--gold);background:rgba(227,179,65,0.14);color:var(--gold);}
+
+  .labelgrid{display:flex;flex-direction:column;gap:12px;margin-bottom:6px;}
+  .labelbtn{border:1.5px solid var(--navy-border);background:var(--navy-card-alt);border-radius:14px;
+    padding:16px;font-size:16px;font-weight:700;cursor:pointer;color:var(--text-light);text-align:center;}
+  .labelbtn.pick-a{border-color:var(--steel);}
+  .labelbtn.pick-b{border-color:var(--tomato);}
+  .labelbtn.chosen-right{background:rgba(111,162,132,0.18);border-color:var(--sage);color:#B9D9C4;}
+
+  .feedback{margin-top:14px;padding:14px;background:rgba(227,179,65,0.08);border-left:4px solid var(--gold);
+    border-radius:10px;font-size:14px;line-height:1.5;color:var(--text-light);}
+  .feedback b{color:var(--gold);}
+
+  .navrow{display:flex;justify-content:space-between;margin-top:18px;gap:10px;}
+  .nextbtn{flex:1;background:linear-gradient(180deg,var(--gold),var(--gold-dark));color:#241A05;border:none;border-radius:14px;
+    padding:14px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 3px 0 #8C6A20;}
+  .nextbtn:disabled{background:var(--navy-card-alt);color:var(--text-muted);box-shadow:none;cursor:not-allowed;}
+  .backstep{background:none;border:1.5px solid var(--navy-border);border-radius:14px;padding:14px 18px;
+    font-size:15px;font-weight:700;color:var(--text-muted);cursor:pointer;}
+
+  /* ---------- SUMMARY ---------- */
+  .summary h2{font-size:20px;margin-bottom:4px;color:var(--text-light);}
+  .summary .sub{color:var(--text-muted);font-size:14px;margin-bottom:16px;}
+  .sumcard{background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);
+    padding:18px;}
+  .sumrow{margin-bottom:14px;}
+  .sumrow:last-child{margin-bottom:0;}
+  .sumrow .k{font-size:12px;font-weight:700;color:var(--gold);text-transform:none;margin-bottom:3px;}
+  .sumrow .v{font-size:15px;line-height:1.4;color:var(--text-light);}
+  .donebadge{display:inline-block;background:rgba(111,162,132,0.18);color:var(--sage);font-weight:700;font-size:13px;
+    padding:6px 12px;border-radius:99px;margin-bottom:14px;}
+
+  /* ---------- SKETCH (stays on paper, like a real sketchbook page) ---------- */
+  .sketchrow{display:flex;flex-direction:column;gap:20px;margin-bottom:6px;}
+  .sketchlabel{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:6px;}
+  .canvaswrap{background:var(--paper-card);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    box-shadow:0 6px 16px rgba(0,0,0,0.3);}
+  .sketchcanvas{width:100%;height:170px;display:block;touch-action:none;}
+  .sketchtools{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+  .swatch{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;flex-shrink:0;}
+  .swatch.on{border-color:var(--gold);}
+  .toolbtn{border:1.5px solid var(--navy-border);background:var(--navy-card-alt);border-radius:10px;padding:7px 12px;
+    font-size:13px;font-weight:700;color:var(--text-muted);cursor:pointer;margin-left:auto;}
+  .toolbtn:active{transform:scale(0.96);}
+  .sketchsumrow{display:flex;gap:10px;flex-wrap:wrap;}
+  .sketchthumb{width:130px;height:auto;border-radius:10px;border:1px solid var(--line);background:#fff;}
+  .homebtn{width:100%;margin-top:18px;background:linear-gradient(180deg,var(--gold),var(--gold-dark));color:#241A05;border:none;border-radius:14px;
+    padding:14px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 3px 0 #8C6A20;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div id="homeview">
+    <div class="hero">
+      <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="75" cy="75" r="60" fill="#0F1830" stroke="#D9A94A" stroke-width="10"/>
+        <circle cx="75" cy="20" r="4.5" fill="#D9A94A"/>
+        <circle cx="75" cy="130" r="4.5" fill="#D9A94A"/>
+        <circle cx="20" cy="75" r="4.5" fill="#D9A94A"/>
+        <circle cx="130" cy="75" r="4.5" fill="#D9A94A"/>
+        <circle cx="36" cy="36" r="4.5" fill="#D9A94A"/>
+        <circle cx="114" cy="36" r="4.5" fill="#D9A94A"/>
+        <circle cx="36" cy="114" r="4.5" fill="#D9A94A"/>
+        <circle cx="114" cy="114" r="4.5" fill="#D9A94A"/>
+        <circle cx="55" cy="45" r="1.6" fill="#E8E4D8"/>
+        <circle cx="90" cy="38" r="1.2" fill="#E8E4D8"/>
+        <circle cx="70" cy="58" r="1.4" fill="#E8E4D8"/>
+        <path d="M28 82 Q52 68 75 82 Q98 96 122 82" stroke="#5B93B0" stroke-width="2.5" fill="none" opacity="0.8"/>
+        <path d="M28 92 Q52 78 75 92 Q98 106 122 92" stroke="#3E6680" stroke-width="2.5" fill="none" opacity="0.6"/>
+      </svg>
+    </div>
+    <div class="kicker"><div class="kicker-pill">⚗ CHEMISTRY LOGBOOK</div></div>
+    <div class="top">
+      <h1>Chem Lab Sketchbook</h1>
+      <div class="sub" id="headerSubTag">Two worlds. One ship. Real reactions.</div>
+      <div class="sub2" id="headerSub">Experiments across ocean liners and kitchens. What are you exploring today?</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-top-row">
+        <div class="progress-label" id="progLabel">0 of 10 missions done</div>
+        <div class="xp-pill" id="xpPill">⭐ 0 XP</div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    </div>
+    <div class="badgerow" id="badgeRow"></div>
+    <button class="cookbookbtn" onclick="openCookbook()">📖 My Cookbook — revise finished recipes</button>
+    <div id="zonesArea"></div>
+  </div>
+
+
+  <div class="missionview" id="missionview">
+    <button class="backbtn" onclick="goHome()">‹ Back to Chem Lab</button>
+    <h2 class="mtitle" id="mTitle"></h2>
+    <p class="mstory" id="mStory"></p>
+    <div class="diagram-box" id="mDiagram"></div>
+    <div class="dots" id="mDots"></div>
+    <div id="stepArea"></div>
+  </div>
+
+  <div class="missionview" id="cookbookview">
+    <button class="backbtn" onclick="goHome()">‹ Back to Chem Lab</button>
+    <h2 class="mtitle">📖 My Cookbook</h2>
+    <p class="mstory">Every finished recipe, all in one place — great for a quick revise before a test.</p>
+    <div id="cookbookArea"></div>
+  </div>
+
+</div>
+
+<script>
+/* ============ DATA ============ */
+const MISSIONS = [
+  {
+    id:'egg', zone:'kitchen', emoji:'🍳', title:'The Solid Egg',
+    story:"You crack an egg into a hot pan. It starts runny and see-through. A few minutes later, it's solid and white.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="300" height="120" fill="none"/>
+      <ellipse cx="70" cy="80" rx="55" ry="18" fill="#4A4038"/>
+      <ellipse cx="70" cy="74" rx="48" ry="15" fill="#F3E4B8"/>
+      <ellipse cx="70" cy="74" rx="16" ry="11" fill="#E8A33D"/>
+      <text x="70" y="106" text-anchor="middle" font-size="11" fill="#6B6459" font-family="-apple-system">Before: runny</text>
+      <path d="M150 60 L190 60" stroke="#C9821F" stroke-width="3" marker-end="url(#arrow)"/>
+      <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <ellipse cx="235" cy="80" rx="55" ry="18" fill="#4A4038"/>
+      <ellipse cx="235" cy="74" rx="48" ry="15" fill="#FAF3E3"/>
+      <ellipse cx="235" cy="76" rx="15" ry="10" fill="#E8A33D"/>
+      <text x="235" y="106" text-anchor="middle" font-size="11" fill="#6B6459" font-family="-apple-system">After: solid</text>
+    </svg>`,
+    notice:['Colour changed','Got firmer','Started see-through','Went from wet to dry-looking'],
+    guessPresets:['It will go back to runny once it cools down','It will stay solid forever, even if it cools down'],
+    watch:['Turned white and solid','Cannot be poured anymore','Stayed solid after cooling','Smells different'],
+    sentenceTemplate:'The heat made the egg’s tiny building blocks (proteins) ___, and they cannot go back to how they were.',
+    wordbank:['change shape permanently','just get warmer','freeze solid','disappear'],
+    correctWord:'change shape permanently',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'chemical',
+    feedback:'This is a chemical change! Heat makes the egg proteins unfold and lock into a new solid shape. Unlike melting chocolate, cooling it back down will not turn it runny again — something new has formed.'
+  },
+  {
+    id:'choc', zone:'kitchen', emoji:'🍫', title:'Melt & Reset',
+    story:"You leave a chocolate bar in the sun. It turns into a puddle. You put it in the freezer... and it turns solid again.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="55" width="60" height="35" rx="4" fill="#6B4226"/>
+      <line x1="20" y1="72" x2="80" y2="72" stroke="#4A2C18" stroke-width="2"/>
+      <line x1="35" y1="55" x2="35" y2="90" stroke="#4A2C18" stroke-width="2"/>
+      <line x1="65" y1="55" x2="65" y2="90" stroke="#4A2C18" stroke-width="2"/>
+      <text x="50" y="106" text-anchor="middle" font-size="11" fill="#6B6459">Solid bar</text>
+      <path d="M150 60 L190 60" stroke="#C9821F" stroke-width="3" marker-end="url(#arrow2)"/>
+      <defs><marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <path d="M215 85 Q225 65 240 82 Q250 65 260 85 Q262 92 240 92 Q218 92 215 85 Z" fill="#6B4226"/>
+      <text x="238" y="106" text-anchor="middle" font-size="11" fill="#6B6459">Puddle</text>
+      <path d="M150 30 a1 1 0 1 0 0.1 0" stroke="none"/>
+      <text x="150" y="20" text-anchor="middle" font-size="10" fill="#C9821F">warm ☀️ / cold ❄️ reverses it</text>
+    </svg>`,
+    notice:['Went from solid to liquid','Changed shape','Got shiny/runny','Colour stayed the same'],
+    guessPresets:['Once it melts, it can never be a solid bar again','If it cools back down, it can turn solid again'],
+    watch:['Melted into a puddle','Froze back into a solid','Colour never changed','It’s still chocolate the whole time'],
+    sentenceTemplate:'Melting and freezing chocolate only changes its ___, not what it’s made of.',
+    wordbank:['state (solid/liquid)','ingredients','smell forever','taste forever'],
+    correctWord:'state (solid/liquid)',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change! Melting and freezing only change the chocolate’s state — it’s still the exact same chocolate before and after. Compare that to the egg: no amount of cooling turns a fried egg back into raw egg.'
+  },
+  {
+    id:'bread', zone:'kitchen', emoji:'🍞', title:'Why Does Bread Rise?',
+    story:"You mix flour, water and yeast into a small, dense dough. You leave it somewhere warm for an hour... and it's doubled in size, full of tiny bubbles.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="70" cy="90" rx="40" ry="14" fill="#D9C79E"/>
+      <text x="70" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Small, dense dough</text>
+      <path d="M150 60 L190 60" stroke="#C9821F" stroke-width="3" marker-end="url(#arrow3)"/>
+      <defs><marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <ellipse cx="235" cy="75" rx="60" ry="26" fill="#E8CB93"/>
+      <circle cx="215" cy="68" r="3" fill="#D9C79E"/>
+      <circle cx="235" cy="60" r="3.5" fill="#D9C79E"/>
+      <circle cx="255" cy="70" r="3" fill="#D9C79E"/>
+      <circle cx="225" cy="80" r="2.5" fill="#D9C79E"/>
+      <circle cx="248" cy="85" r="3" fill="#D9C79E"/>
+      <text x="235" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Big, bubbly dough</text>
+    </svg>`,
+    notice:['Got bigger','Full of tiny holes/bubbles','Felt softer','Smelled different'],
+    guessPresets:['The yeast is breathing out air like a balloon being blown up','Something inside is making a gas that gets trapped'],
+    watch:['Dough doubled in size','Tiny bubbles appeared all through it','It stayed warm to the touch','It smelled slightly yeasty/sour'],
+    sentenceTemplate:'Yeast is alive and feeds on the flour, producing a gas that gets ___ inside the dough, making it puff up.',
+    wordbank:['trapped','dissolved','frozen','removed'],
+    correctWord:'trapped',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance formed)', key:'chemical'},
+    correctLabel:'chemical',
+    feedback:'This is a chemical change! Yeast reacts with sugars in the flour and produces carbon dioxide gas — a brand new substance that wasn’t there before. That’s why you can’t squash the dough flat and get the exact same raw dough back.'
+  },
+  {
+    id:'sugarflour', zone:'kitchen', emoji:'🥣', title:'Sugar vs Flour in Water',
+    story:"You stir a spoon of sugar into a glass of water. It disappears completely. You try the same with a spoon of flour — the water goes cloudy and bits settle at the bottom.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 30 L40 95 Q40 105 50 105 L90 105 Q100 105 100 95 L100 30" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <text x="70" y="115" text-anchor="middle" font-size="11" fill="#6B6459">+ sugar = clear</text>
+      <path d="M200 30 L200 95 Q200 105 210 105 L250 105 Q260 105 260 95 L260 30" fill="#DDE6EA" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="220" cy="92" r="2.5" fill="#B8AF95"/>
+      <circle cx="232" cy="95" r="2" fill="#B8AF95"/>
+      <circle cx="244" cy="90" r="2.5" fill="#B8AF95"/>
+      <circle cx="228" cy="88" r="2" fill="#B8AF95"/>
+      <text x="230" y="115" text-anchor="middle" font-size="11" fill="#6B6459">+ flour = cloudy</text>
+    </svg>`,
+    notice:['Sugar disappeared','Flour made the water cloudy','Flour settled at the bottom','Water stayed clear with sugar'],
+    guessPresets:['Sugar and flour will both just disappear the same way','Sugar will dissolve but flour won’t dissolve the same way'],
+    watch:['Sugar water stayed clear','Flour water stayed cloudy','Flour left bits at the bottom','Sugar left nothing behind'],
+    sentenceTemplate:'Sugar’s particles are small enough to spread evenly through the water and ___, but flour’s particles are too big to do that.',
+    wordbank:['dissolve','float away','disappear forever','evaporate'],
+    correctWord:'dissolve',
+    labelA:{text:'True solution (dissolves completely)', key:'solution'},
+    labelB:{text:'Suspension (doesn’t dissolve, settles)', key:'suspension'},
+    correctLabel:'solution',
+    feedback:'Sugar water is a true solution — the sugar particles are small enough to spread out evenly and you can’t see them anymore. Flour and water is a suspension — the flour particles are too big to dissolve, so they stay cloudy and eventually settle.'
+  },
+  {
+    id:'oilwater', zone:'kitchen', emoji:'🥗', title:'Oil & Water Won’t Mix',
+    story:"You pour oil into a jar of water. They sit in two separate layers. You shake the jar hard... and for a moment it looks mixed — then it separates right back into layers.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 20 L40 95 Q40 105 50 105 L90 105 Q100 105 100 95 L100 20" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <rect x="41" y="20" width="58" height="30" fill="#F2C879"/>
+      <text x="70" y="115" text-anchor="middle" font-size="11" fill="#6B6459">Still (2 layers)</text>
+      <path d="M150 60 L185 60" stroke="#C9821F" stroke-width="3" marker-end="url(#arrow4)"/>
+      <defs><marker id="arrow4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <text x="167" y="52" text-anchor="middle" font-size="16">🫳</text>
+      <path d="M200 20 L200 95 Q200 105 210 105 L250 105 Q260 105 260 95 L260 20" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="215" cy="35" r="3" fill="#F2C879"/><circle cx="230" cy="45" r="4" fill="#F2C879"/>
+      <circle cx="245" cy="30" r="2.5" fill="#F2C879"/><circle cx="220" cy="55" r="3" fill="#F2C879"/>
+      <circle cx="240" cy="60" r="3.5" fill="#F2C879"/><circle cx="250" cy="45" r="2" fill="#F2C879"/>
+      <text x="230" y="115" text-anchor="middle" font-size="11" fill="#6B6459">Shaken (blobs)</text>
+    </svg>`,
+    notice:['Two separate layers formed','Oil floats on top','Shaking makes small blobs','It goes back to layers after resting'],
+    guessPresets:['Shaking will mix them together permanently','Shaking only mixes them for a short while, then they separate again'],
+    watch:['Oil floated back to the top','It separated again after resting','Small droplets of oil in the water briefly','Water stayed at the bottom'],
+    sentenceTemplate:'Oil and water don’t mix because their particles don’t attract each other — chemists call this ___.',
+    wordbank:['immiscible','dissolved','frozen','evaporated'],
+    correctWord:'immiscible',
+    labelA:{text:'Mixes together (miscible)', key:'miscible'},
+    labelB:{text:'Separates into layers (immiscible)', key:'immiscible'},
+    correctLabel:'immiscible',
+    feedback:'Oil and water are immiscible — they don’t mix because their particles don’t attract each other. Shaking briefly breaks the oil into tiny droplets, but it always separates back out. This is exactly the problem mayonnaise has to solve!'
+  },
+  {
+    id:'rust', zone:'titanic', emoji:'⚙️', title:'The Rusting Rivets',
+    story:"A steel rivet holds two hull plates together. Fresh from the workshop, it's shiny and grey. After months at sea, salty air and water turn it orange and flaky.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="70" cy="65" r="30" fill="#B9BFC4"/>
+      <circle cx="70" cy="65" r="30" fill="none" stroke="#8A9096" stroke-width="2"/>
+      <text x="70" y="105" text-anchor="middle" font-size="11" fill="#6B6459">Before: shiny steel</text>
+      <path d="M150 60 L190 60" stroke="#C9821F" stroke-width="3" marker-end="url(#arrowR)"/>
+      <defs><marker id="arrowR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <circle cx="235" cy="65" r="30" fill="#C4602B"/>
+      <circle cx="222" cy="55" r="4" fill="#8A4A1F"/>
+      <circle cx="248" cy="72" r="5" fill="#8A4A1F"/>
+      <circle cx="238" cy="48" r="3" fill="#8A4A1F"/>
+      <circle cx="225" cy="78" r="3.5" fill="#8A4A1F"/>
+      <text x="235" y="105" text-anchor="middle" font-size="11" fill="#6B6459">After: rusty, flaky</text>
+    </svg>`,
+    notice:['Colour changed to orange','Surface got flaky/crumbly','Felt rougher','Getting weaker'],
+    guessPresets:['The rust can be polished off and the rivet goes back to shiny steel underneath','Rust is a brand new substance — the steel underneath it is gone for good'],
+    watch:['Orange-brown flaky coating formed','Rivet became weaker and crumbly','Happened faster near salty sea spray','Metal underneath the rust is pitted, not smooth'],
+    sentenceTemplate:'Iron reacts with oxygen and water to form rust, which is a completely ___ substance from the original steel.',
+    wordbank:['different','identical','colder','shinier'],
+    correctWord:'different',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'chemical',
+    feedback:'This is a chemical change! Iron reacts with oxygen and water to form iron oxide (rust) — a new substance with different properties to steel. You can’t turn rust back into clean steel; you can only remove the rust and expose fresh steel underneath, which will rust again over time. This is why ships get repainted constantly.'
+  },
+  {
+    id:'steam', zone:'titanic', emoji:'💨', title:'Steam in the Boiler Room',
+    story:"Water in the ship's boiler is heated until it turns to steam, which drives the engines. Some steam escapes and hits a cold porthole window — tiny water droplets appear on the glass.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="55" width="60" height="40" rx="6" fill="#3E6680"/>
+      <path d="M45 55 Q50 40 60 45 Q65 30 75 40 Q80 30 85 45" stroke="#DDE6EA" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <text x="60" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Water → steam</text>
+      <path d="M150 60 L185 60" stroke="#C9821F" stroke-width="3" marker-end="url(#arrowS)"/>
+      <defs><marker id="arrowS" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <rect x="210" y="35" width="60" height="55" rx="4" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="222" cy="50" r="2" fill="#3E6680"/><circle cx="235" cy="60" r="2.5" fill="#3E6680"/>
+      <circle cx="248" cy="45" r="2" fill="#3E6680"/><circle cx="258" cy="65" r="2.5" fill="#3E6680"/>
+      <circle cx="228" cy="72" r="2" fill="#3E6680"/><circle cx="252" cy="78" r="2" fill="#3E6680"/>
+      <text x="240" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Steam → droplets</text>
+    </svg>`,
+    notice:['Water disappeared into the air as steam','Droplets formed on the cold glass','Felt warm near the boiler, cold near the window','No new smell appeared'],
+    guessPresets:['Once water becomes steam, it’s gone forever and can’t become water again','The steam is still water — it just changed state and can turn back into liquid'],
+    watch:['Steam rose from the hot water','Droplets appeared on the cold glass','The water on the glass could evaporate again if warmed','No new substance was formed, just water in different states'],
+    sentenceTemplate:'Boiling and condensing only change water’s ___, not what it’s made of.',
+    wordbank:['state (liquid/gas)','ingredients','colour forever','smell forever'],
+    correctWord:'state (liquid/gas)',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change! Boiling water into steam and condensing it back into droplets only changes its state — it’s the same water (H2O) the whole time. This is exactly the same idea as melting and freezing chocolate, just with a different substance and different temperatures.'
+  },
+  {
+    id:'saltwater', zone:'titanic', emoji:'🧂', title:'Salt Water vs Fresh Water Boilers',
+    story:"The ship's boilers need fresh water to run properly. An engineer boils away a sample of sea water in a dish to test it — the water disappears, but white salt crystals are left behind.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="70" cy="80" rx="45" ry="14" fill="#DDE6EA" stroke="#3E6680" stroke-width="2"/>
+      <text x="70" y="105" text-anchor="middle" font-size="11" fill="#6B6459">Sea water in dish</text>
+      <path d="M150 60 L185 60" stroke="#C9821F" stroke-width="3" marker-end="url(#arrowW)"/>
+      <defs><marker id="arrowW" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <text x="167" y="48" text-anchor="middle" font-size="14">🔥</text>
+      <ellipse cx="235" cy="85" rx="45" ry="10" fill="#EDEDE8" stroke="#B9BFC4" stroke-width="2"/>
+      <circle cx="220" cy="83" r="2.5" fill="#fff" stroke="#B9BFC4"/>
+      <circle cx="235" cy="86" r="3" fill="#fff" stroke="#B9BFC4"/>
+      <circle cx="248" cy="82" r="2" fill="#fff" stroke="#B9BFC4"/>
+      <text x="235" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Salt crystals left</text>
+    </svg>`,
+    notice:['Water level went down as it boiled away','White crystals appeared in the dish','Dish felt hot','Crystals looked like tiny grains'],
+    guessPresets:['The salt disappeared forever, along with the water','The salt was there the whole time, just dissolved — boiling only removed the water'],
+    watch:['Water evaporated away completely','White salt crystals remained in the dish','The salt did not burn or change colour','You could dissolve the leftover salt back into fresh water'],
+    sentenceTemplate:'Salt dissolved in sea water can be separated out again by evaporation, because dissolving is a ___ change, not a chemical one.',
+    wordbank:['physical','permanent','chemical','impossible'],
+    correctWord:'physical',
+    labelA:{text:'Temporary mixture (can be separated back out)', key:'separable'},
+    labelB:{text:'Permanent new substance (cannot be separated)', key:'permanent'},
+    correctLabel:'separable',
+    feedback:'Dissolving salt in water is a physical change — the salt particles spread through the water but don’t change into something new. Evaporating the water leaves the salt behind exactly as it was, which is why ship engineers could test water this way: fresh water leaves no crystals, but salt water leaves plenty behind and would quickly damage the boilers.'
+  },
+  {
+    id:'coal', zone:'titanic', emoji:'🔥', title:'Burning Coal in the Furnace',
+    story:"A stoker shovels black coal into the roaring furnace. It glows, burns down to grey ash, and hot gases rush up the funnel. The ash left behind is nothing like the coal that went in.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="35" y="65" width="55" height="30" rx="4" fill="#2E2A24"/>
+      <rect x="42" y="70" width="10" height="10" fill="#1A1712"/>
+      <rect x="58" y="72" width="10" height="8" fill="#1A1712"/>
+      <rect x="72" y="69" width="8" height="10" fill="#1A1712"/>
+      <text x="60" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Coal (black lumps)</text>
+      <path d="M150 60 L185 60" stroke="#C9821F" stroke-width="3" marker-end="url(#arrowC)"/>
+      <defs><marker id="arrowC" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <path d="M225 50 Q230 35 235 48 Q240 30 245 45" stroke="#B9BFC4" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="235" cy="85" rx="40" ry="12" fill="#C9C4B8"/>
+      <text x="235" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Grey ash + gas</text>
+    </svg>`,
+    notice:['Coal glowed and gave off heat','Grey ash was left behind','Smoke/gas rose up the funnel','Ash weighs much less than the coal did'],
+    guessPresets:['The coal just changed shape into ash, but it’s still the same substance','Burning coal makes brand new substances — ash and gases — that didn’t exist before'],
+    watch:['Coal turned into grey ash','Hot gases rose up the funnel','The ash could not be turned back into coal','A lot of heat was given off'],
+    sentenceTemplate:'Burning coal reacts with oxygen to release heat and produce ash and gas — substances that are ___ from the coal.',
+    wordbank:['completely different','exactly the same','just colder versions','just wetter versions'],
+    correctWord:'completely different',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'chemical',
+    feedback:'This is a chemical change (combustion)! Coal reacts with oxygen in the air to release heat and light, forming ash and gases that are totally different from the coal that went in. There’s no way to turn the ash and smoke back into lumps of coal — that’s the clearest sign a chemical change happened.'
+  },
+  {
+    id:'expand', zone:'titanic', emoji:'📏', title:'Metal Expansion in the Heat',
+    story:"An engineer measures a steel hull plate in the cold morning air. By midday, working next to the hot boilers, the same plate has expanded very slightly — by evening it has shrunk back to its original size.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="55" width="70" height="20" fill="#8A9096"/>
+      <text x="65" y="90" text-anchor="middle" font-size="11" fill="#6B6459">Cool: normal length</text>
+      <path d="M150 60 L185 60" stroke="#C9821F" stroke-width="3" marker-end="url(#arrowE)"/>
+      <defs><marker id="arrowE" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <rect x="200" y="55" width="82" height="20" fill="#B9BFC4"/>
+      <text x="241" y="90" text-anchor="middle" font-size="11" fill="#6B6459">Hot: slightly longer</text>
+      <text x="241" y="45" text-anchor="middle" font-size="13">🔥</text>
+    </svg>`,
+    notice:['Plate got very slightly longer when hot','Plate shrank back when it cooled','No new marks or damage appeared','Still looks like the exact same steel'],
+    guessPresets:['Once metal expands from heat, it stays that longer size forever','Metal expands when heated and shrinks back when it cools — same metal the whole time'],
+    watch:['Plate measured longer at midday','Plate returned to its original length by evening','No new substance appeared','The metal was never damaged by the temperature change'],
+    sentenceTemplate:'Heating and cooling metal only changes its ___, not what the metal is made of.',
+    wordbank:['size (it expands and contracts)','colour permanently','weight','ingredients'],
+    correctWord:'size (it expands and contracts)',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change! Heat makes the metal’s particles vibrate more and spread slightly further apart, so the plate expands — then contracts back to its original size once it cools. This is exactly why ships (and bridges, and railway tracks) are built with small gaps to allow for this everyday expansion and contraction.'
+  },
+  {
+    id:'icefireball', zone:'pixel', emoji:'❄️', title:'Ice Block Meets Fireball',
+    story:"A frozen block of ice sits in the level, solid and blue. A fireball zooms in and hits it \u2014 within seconds the ice has turned into a puddle of plain water.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="35" y="45" width="60" height="55" rx="6" fill="#BEE3F0" stroke="#5B93B0" stroke-width="2"/>
+      <path d="M45 55 L55 65 M75 50 L65 62 M50 80 L60 88" stroke="#8FC6DB" stroke-width="2"/>
+      <text x="65" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Solid ice block</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u{1F525}\u2192</text>
+      <path d="M210 70 Q225 85 240 72 Q255 90 270 74" stroke="#5B93B0" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="240" cy="88" rx="45" ry="8" fill="#BEE3F0" opacity="0.5"/>
+      <text x="240" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Puddle of water</text>
+    </svg>`,
+    notice:['Ice was solid and cold','Fireball touched the ice','Puddle appeared afterward','No smoke or burning smell'],
+    guessPresets:['Once ice melts it can never freeze solid again','If the puddle gets cold enough again, it can turn back into solid ice'],
+    watch:['Ice turned into a liquid puddle','No new smell or gas appeared','The puddle is still see-through, like ice was','Freezing the puddle again would make ice'],
+    sentenceTemplate:'Melting ice with fire only changes its ___, not what it\u2019s made of \u2014 it\u2019s still the same water.',
+    wordbank:['state (solid/liquid)','ingredients','colour forever','weight'],
+    correctWord:'state (solid/liquid)',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change! The fireball\u2019s heat melts the ice from a solid into a liquid, but it\u2019s exactly the same water the whole time. Freeze that puddle again and you\u2019d get ice back \u2014 nothing new was created, just a change of state.'
+  },
+  {
+    id:'fizzblock', zone:'pixel', emoji:'🧪', title:'The Fizzing Trap Block',
+    story:"A hidden block is rigged with a white powder inside. When a splash of clear liquid drips onto it, the block suddenly fizzes, foams and puffs up with bubbles pouring out the sides.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="55" width="50" height="40" rx="4" fill="#E8CB93" stroke="#C9821F" stroke-width="2"/>
+      <rect x="42" y="65" width="8" height="8" fill="#fff"/>
+      <rect x="55" y="70" width="8" height="8" fill="#fff"/>
+      <text x="55" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Powder-filled block</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u{1F4A7}\u2192</text>
+      <rect x="205" y="45" width="55" height="50" rx="4" fill="#E8CB93" stroke="#C9821F" stroke-width="2"/>
+      <circle cx="220" cy="48" r="4" fill="#fff" opacity="0.8"/>
+      <circle cx="235" cy="40" r="5" fill="#fff" opacity="0.8"/>
+      <circle cx="250" cy="46" r="3.5" fill="#fff" opacity="0.8"/>
+      <circle cx="228" cy="35" r="3" fill="#fff" opacity="0.8"/>
+      <text x="232" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Fizzing and foaming</text>
+    </svg>`,
+    notice:['Bubbles poured out suddenly','Foam grew bigger and bigger','A hissing/fizzing sound started','Felt slightly cooler around the block'],
+    guessPresets:['The powder and liquid just mixed together, nothing new was made','The powder and liquid reacted to make a completely new gas'],
+    watch:['Bubbles and foam kept appearing','A gas was clearly being produced','You can\u2019t un-fizz it back into plain powder and liquid','The block felt different afterward, not just wetter'],
+    sentenceTemplate:'The powder and liquid react together to produce a gas, which is a ___ that wasn\u2019t there before.',
+    wordbank:['new substance','bigger puddle','frozen block','louder sound'],
+    correctWord:'new substance',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'chemical',
+    feedback:'This is a chemical change! The powder and liquid react to produce a gas (lots of real chemistry reactions do this \u2014 think baking soda and vinegar). Once the bubbles stop, you can\u2019t separate everything back into the original powder and liquid \u2014 a new substance has formed.'
+  },
+  {
+    id:'lavablock', zone:'pixel', emoji:'🔥', title:'Wooden Block Meets Lava',
+    story:"A wooden crate tips over the edge of a platform and lands in glowing lava below. Within moments it\u2019s crackling, turning black, and leaving behind only ash and smoke.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="35" y="50" width="55" height="45" rx="3" fill="#A8703E" stroke="#6B4226" stroke-width="2"/>
+      <line x1="35" y1="72" x2="90" y2="72" stroke="#6B4226" stroke-width="1.5"/>
+      <text x="62" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Wooden crate</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u{1F30B}\u2192</text>
+      <path d="M215 50 Q220 35 225 48 Q230 30 235 45" stroke="#B9BFC4" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <rect x="210" y="75" width="55" height="20" rx="3" fill="#2E2A24"/>
+      <text x="237" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Ash + smoke</text>
+    </svg>`,
+    notice:['Crate started crackling and glowing','Turned black then grey','Smoke rose upward','Left much smaller and lighter than before'],
+    guessPresets:['The wood just changed shape into ash, still the same wood underneath','Burning wood makes brand new substances \u2014 ash and smoke \u2014 that are not wood anymore'],
+    watch:['Wood turned into grey-black ash','Smoke and gases rose away','The ash cannot be turned back into a wooden crate','A lot of heat and light was given off'],
+    sentenceTemplate:'Burning wood reacts with oxygen to release heat and produce ash and gas that are ___ from the wood.',
+    wordbank:['completely different','exactly the same','just darker versions','just smaller versions'],
+    correctWord:'completely different',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'chemical',
+    feedback:'This is a chemical change (combustion)! The wood reacts with oxygen to release heat and light, leaving behind ash and gases that are totally different substances from the wood that went in. There\u2019s no way to turn ash back into a wooden crate \u2014 a clear sign a chemical change happened, just like the coal in the ship\u2019s furnace.'
+  },
+  {
+    id:'pipefrost', zone:'pixel', emoji:'🧊', title:'Frost on the Warp Pipe',
+    story:"A metal pipe runs through a damp, humid underground cave. The pipe itself is freezing cold from the water rushing through it \u2014 soon a layer of white frost coats the outside of the metal.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="35" y="35" width="45" height="70" rx="10" fill="#4C9F70"/>
+      <text x="57" y="117" text-anchor="middle" font-size="11" fill="#6B6459">Bare cold pipe</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u{1F4A8}\u2192</text>
+      <rect x="205" y="35" width="45" height="70" rx="10" fill="#4C9F70"/>
+      <circle cx="215" cy="45" r="2" fill="#fff"/><circle cx="230" cy="50" r="2.5" fill="#fff"/>
+      <circle cx="240" cy="60" r="2" fill="#fff"/><circle cx="212" cy="65" r="2" fill="#fff"/>
+      <circle cx="235" cy="75" r="2.5" fill="#fff"/><circle cx="220" cy="90" r="2" fill="#fff"/>
+      <circle cx="245" cy="90" r="2" fill="#fff"/>
+      <text x="227" y="117" text-anchor="middle" font-size="11" fill="#6B6459">Frosty white coating</text>
+    </svg>`,
+    notice:['White coating appeared on the metal','Pipe felt extremely cold','Coating looked powdery, like tiny ice crystals','No liquid dripped off at first'],
+    guessPresets:['The frost is a totally new substance made from the metal pipe','The frost is just water vapour from the air turning straight into ice on the cold metal'],
+    watch:['Frost formed only on the cold parts of the pipe','Frost melted into water droplets once warmed up','No new smell or substance appeared, just ice','More frost formed in more humid air'],
+    sentenceTemplate:'Frost forms when water vapour in the air touches something very cold and turns directly into ___, without becoming liquid first.',
+    wordbank:['solid ice','a gas','a new chemical','rust'],
+    correctWord:'solid ice',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change! Water vapour in the humid cave air touches the freezing pipe and turns straight into solid ice crystals (frost), skipping the liquid stage. Warm the pipe up and the frost simply melts away as water \u2014 it\u2019s the same water the whole time, just changing state.'
+  },
+  {
+    id:'growshroom', zone:'pixel', emoji:'🍄', title:'The Mushroom\u2019s Growth Spurt',
+    story:"A small, dry mushroom sits at the edge of a pond. Overnight it soaks up water from the damp soil and swells to twice its size. Move it somewhere dry, and over the next few days it shrinks back down again.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="65" cy="80" rx="18" ry="10" fill="#C4472B"/>
+      <rect x="58" y="80" width="14" height="16" rx="3" fill="#F3E4B8"/>
+      <text x="65" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Small, dry</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u{1F4A7}\u2192</text>
+      <ellipse cx="235" cy="75" rx="34" ry="18" fill="#C4472B"/>
+      <rect x="222" y="75" width="26" height="26" rx="5" fill="#F3E4B8"/>
+      <text x="235" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Big, plump</text>
+    </svg>`,
+    notice:['Mushroom got noticeably bigger','Felt firmer/plumper to the touch','Colour stayed the same','Shrank back when moved somewhere dry'],
+    guessPresets:['Once it grows bigger, it stays that size forever, even if it dries out','It grows by soaking up water, and shrinks again as that water leaves'],
+    watch:['Mushroom swelled up near water','Shrank back down in dry air','Never changed into a different colour or smell','Still looks and feels like the same mushroom, just a different size'],
+    sentenceTemplate:'The mushroom swells by absorbing water and shrinks as it dries out \u2014 only its ___ changes, not what it\u2019s made of.',
+    wordbank:['size (it absorbs/loses water)','ingredients','colour permanently','species'],
+    correctWord:'size (it absorbs/loses water)',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change! The mushroom absorbs water and swells up, then releases that water and shrinks back down in dry air \u2014 the same trick real sponges (and gummy sweets!) use. No new substance is formed, just a change in how much water is soaked into it.'
+  }
+];
+const ZONES = [
+  { id:'kitchen', emoji:'🍳', title:'Kitchen Chemistry', subtitle:'Cooking as a chemistry lab' },
+  { id:'titanic', emoji:'⚙️', title:'Titanic Engine Room', subtitle:'Rust, steam, salt and coal aboard an ocean liner' },
+  { id:'pixel', emoji:'🍄', title:'Pixel Power Lab', subtitle:'Retro platformer physics \u2014 real chemistry, no cartridge required' }
+];
+
+
+
+const STORAGE_KEY = 'chem-lab-v1';
+
+/* ============ STATE ============ */
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { missions:{} };
+}
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+let state = loadState();
+function getM(id){
+  if(!state.missions[id]) state.missions[id] = { step:0, notice:[], guess:null, guessOwn:'', watch:[], sketchBefore:null, sketchAfter:null, explainWord:null, label:null, labelFirstTry:null, labelFirstCorrect:null, done:false };
+  return state.missions[id];
+}
+
+let currentMissionId = null;
+
+/* ============ HOME VIEW ============ */
+const XP_PER_MISSION = 20;
+
+const BADGES = [
+  { id:'kitchen', emoji:'🍳', label:'Kitchen Apprentice',
+    check: () => MISSIONS.filter(m=>m.zone==='kitchen').every(m=>getM(m.id).done) },
+  { id:'titanic', emoji:'⚙️', label:'Engine Room Cadet',
+    check: () => MISSIONS.filter(m=>m.zone==='titanic').every(m=>getM(m.id).done) },
+  { id:'pixel', emoji:'🍄', label:'Pixel Explorer',
+    check: () => MISSIONS.filter(m=>m.zone==='pixel').every(m=>getM(m.id).done) },
+  { id:'detective', emoji:'🧪', label:'Change Detective',
+    check: () => MISSIONS.filter(m=>getM(m.id).labelFirstCorrect===true).length>=5 },
+  { id:'artist', emoji:'🎨', label:'Sketch Artist',
+    check: () => { let c=0; MISSIONS.forEach(m=>{const ms=getM(m.id); if(ms.sketchBefore)c++; if(ms.sketchAfter)c++;}); return c>=3; } },
+  { id:'fullsteam', emoji:'🚢', label:'Full Steam Ahead',
+    check: () => MISSIONS.every(m=>getM(m.id).done) }
+];
+
+function renderHome(){
+  const doneCount = MISSIONS.filter(m=>getM(m.id).done).length;
+  document.getElementById('progFill').style.width = (doneCount/MISSIONS.length*100)+'%';
+  document.getElementById('progLabel').textContent = doneCount+' of '+MISSIONS.length+' missions done';
+  document.getElementById('xpPill').textContent = '⭐ '+(doneCount*XP_PER_MISSION)+' XP';
+  document.getElementById('headerSub').textContent = MISSIONS.length+' experiments across '+ZONES.length+' worlds. What are you exploring today?';
+
+  const badgeRow = document.getElementById('badgeRow');
+  badgeRow.innerHTML = BADGES.map(b=>{
+    const earned = b.check();
+    return `<div class="badgechip ${earned?'earned':''}">
+      <span class="bemoji">${b.emoji}</span>
+      <span class="blabel">${b.label}</span>
+    </div>`;
+  }).join('');
+
+  const zonesArea = document.getElementById('zonesArea');
+  zonesArea.innerHTML = '';
+  ZONES.forEach(zone=>{
+    const zoneMissions = MISSIONS.filter(m=>m.zone===zone.id);
+    const zoneDone = zoneMissions.filter(m=>getM(m.id).done).length;
+
+    const section = document.createElement('div');
+    section.className = 'zonesection zone-'+zone.id;
+    section.innerHTML = `
+      <div class="zoneheader">
+        <h2>${zone.emoji} ${zone.title}</h2>
+        <div class="zprog">${zoneDone} of ${zoneMissions.length}</div>
+      </div>
+      <div class="zonesub">${zone.subtitle}</div>
+      <div class="grid"></div>
+    `;
+    const grid = section.querySelector('.grid');
+
+    zoneMissions.forEach(m=>{
+      const ms = getM(m.id);
+      let badgeClass='notstarted', badgeText='Not started';
+      if(ms.done){ badgeClass='done'; badgeText='Done ✓'; }
+      else if(ms.step>0){ badgeClass='inprogress'; badgeText='In progress'; }
+
+      let trafficDot = '';
+      if(ms.labelFirstCorrect===true) trafficDot = '<div class="trafficdot green"></div>';
+      else if(ms.labelFirstCorrect===false) trafficDot = '<div class="trafficdot yellow"></div>';
+
+      const card = document.createElement('div');
+      card.className='rcard';
+      card.onclick=()=>openMission(m.id);
+      card.innerHTML = `
+        <div class="emoji">${m.emoji}</div>
+        <div class="info">
+          <h3>${m.title}</h3>
+          <p>${badgeText==='Not started' ? 'Tap to start' : (ms.done ? 'Mission complete' : 'Tap to continue')}</p>
+        </div>
+        <div class="statuswrap">
+          <div class="badge ${badgeClass}">${badgeText}</div>
+          ${trafficDot}
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    zonesArea.appendChild(section);
+  });
+}
+
+function goHome(){
+  document.getElementById('homeview').style.display='block';
+  document.getElementById('missionview').classList.remove('active');
+  document.getElementById('cookbookview').classList.remove('active');
+  currentMissionId=null;
+  renderHome();
+}
+
+/* ============ MISSION VIEW ============ */
+function openMission(id){
+  currentMissionId = id;
+  document.getElementById('homeview').style.display='none';
+  document.getElementById('missionview').classList.add('active');
+  const m = MISSIONS.find(x=>x.id===id);
+  document.getElementById('mTitle').textContent = m.emoji+' '+m.title;
+  document.getElementById('mStory').textContent = m.story;
+  document.getElementById('mDiagram').innerHTML = m.diagram;
+  renderStep();
+}
+
+function renderDots(){
+  const ms = getM(currentMissionId);
+  const wrap = document.getElementById('mDots');
+  wrap.innerHTML='';
+  for(let i=0;i<6;i++){
+    const d = document.createElement('div');
+    d.className='dot' + (i<ms.step?' pastdone':'') + (i===ms.step?' on':'');
+    wrap.appendChild(d);
+  }
+}
+
+function renderStep(){
+  const m = MISSIONS.find(x=>x.id===currentMissionId);
+  const ms = getM(currentMissionId);
+  renderDots();
+  const area = document.getElementById('stepArea');
+
+  if(ms.step===6){ renderSummary(m, ms); return; }
+
+  let html = '<div class="stepcard">';
+
+  if(ms.step===0){
+    html += `<div class="stepkicker">STEP 1 · NOTICE</div>
+      <div class="stepq">What do you notice? Tap all that fit.</div>
+      <div class="chipgrid">`;
+    m.notice.forEach((c,i)=>{
+      const sel = ms.notice.includes(i);
+      html += `<div class="chip ${sel?'sel':''}" onclick="toggleChip('notice',${i})">${c}</div>`;
+    });
+    html += `</div>`;
+  }
+  else if(ms.step===1){
+    html += `<div class="stepkicker">STEP 2 · GUESS</div>
+      <div class="stepq">What do you think is really going on?</div>
+      <div class="presetgrid">`;
+    m.guessPresets.forEach((g,i)=>{
+      const sel = ms.guess===i;
+      html += `<div class="preset ${sel?'sel':''}" onclick="pickGuess(${i})">${g}</div>`;
+    });
+    html += `</div>
+      <div class="ownwrap">
+        <label>Or write your own guess:</label>
+        <textarea rows="2" placeholder="I think..." oninput="ownGuess(this.value)">${ms.guessOwn||''}</textarea>
+      </div>`;
+  }
+  else if(ms.step===2){
+    html += `<div class="stepkicker">STEP 3 · WATCH</div>
+      <div class="stepq">What actually happened? Tap all that fit.</div>
+      <div class="chipgrid">`;
+    m.watch.forEach((c,i)=>{
+      const sel = ms.watch.includes(i);
+      html += `<div class="chip ${sel?'sel':''}" onclick="toggleChip('watch',${i})">${c}</div>`;
+    });
+    html += `</div>`;
+  }
+  else if(ms.step===3){
+    html += `<div class="stepkicker">STEP 4 · SKETCH IT (optional)</div>
+      <div class="stepq">Draw what it looked like before, and what it looked like after.</div>
+      <div class="sketchrow">
+        <div class="sketchcol">
+          <div class="sketchlabel">Before</div>
+          <div class="canvaswrap"><canvas id="canvas-before" class="sketchcanvas"></canvas></div>
+          <div class="sketchtools" id="tools-before"></div>
+        </div>
+        <div class="sketchcol">
+          <div class="sketchlabel">After</div>
+          <div class="canvaswrap"><canvas id="canvas-after" class="sketchcanvas"></canvas></div>
+          <div class="sketchtools" id="tools-after"></div>
+        </div>
+      </div>`;
+  }
+  else if(ms.step===4){
+    html += `<div class="stepkicker">STEP 5 · EXPLAIN</div>
+      <div class="stepq">Tap the word that finishes the sentence.</div>
+      <div class="sentence">${m.sentenceTemplate.replace('___','<span class="blank">'+(ms.explainWord!==null?m.wordbank[ms.explainWord]:'?????')+'</span>')}</div>
+      <div class="wordbank">`;
+    m.wordbank.forEach((w,i)=>{
+      const sel = ms.explainWord===i;
+      html += `<div class="word ${sel?'sel':''}" onclick="pickWord(${i})">${w}</div>`;
+    });
+    html += `</div>`;
+  }
+  else if(ms.step===5){
+    html += `<div class="stepkicker">STEP 6 · LABEL IT</div>
+      <div class="stepq">Which best describes what happened?</div>
+      <div class="labelgrid">
+        <div class="labelbtn pick-a ${labelClass(m,ms,m.labelA.key)}" onclick="pickLabel('${m.labelA.key}')">${m.labelA.text}</div>
+        <div class="labelbtn pick-b ${labelClass(m,ms,m.labelB.key)}" onclick="pickLabel('${m.labelB.key}')">${m.labelB.text}</div>
+      </div>`;
+    if(ms.label){
+      html += `<div class="feedback"><b>${ms.label===m.correctLabel?'Nice work!':'Good thinking — here’s what’s really going on:'}</b><br>${m.feedback}</div>`;
+    }
+  }
+
+  const canNext = checkCanNext(m, ms);
+  html += `<div class="navrow">
+      ${ms.step>0 ? '<button class="backstep" onclick="prevStep()">Back</button>' : '<span></span>'}
+      <button class="nextbtn" id="nextBtn" ${canNext?'':'disabled'} onclick="nextStep()">${ms.step===5?'Finish Recipe':'Next'}</button>
+    </div>`;
+
+  html += '</div>';
+  area.innerHTML = html;
+
+  if(ms.step===3){ initSketchStep(); }
+}
+
+function labelClass(m,ms,key){
+  if(ms.label===key && key===m.correctLabel) return 'chosen-right';
+  return '';
+}
+
+function checkCanNext(m, ms){
+  if(ms.step===0) return ms.notice.length>0;
+  if(ms.step===1) return ms.guess!==null || (ms.guessOwn && ms.guessOwn.trim().length>0);
+  if(ms.step===2) return ms.watch.length>0;
+  if(ms.step===3) return true; // sketch is optional, never blocks
+  if(ms.step===4) return ms.explainWord!==null;
+  if(ms.step===5) return ms.label!==null;
+  return false;
+}
+
+function toggleChip(field, i){
+  const ms = getM(currentMissionId);
+  const arr = ms[field];
+  const idx = arr.indexOf(i);
+  if(idx>-1) arr.splice(idx,1); else arr.push(i);
+  saveState(); renderStep();
+}
+function pickGuess(i){
+  const ms = getM(currentMissionId);
+  ms.guess = i; saveState(); renderStep();
+}
+function ownGuess(val){
+  const ms = getM(currentMissionId);
+  ms.guessOwn = val; ms.guess=null; saveState();
+  const btn = document.getElementById('nextBtn');
+  if(btn) btn.disabled = !checkCanNext(MISSIONS.find(x=>x.id===currentMissionId), ms);
+}
+function pickWord(i){
+  const ms = getM(currentMissionId);
+  ms.explainWord = i; saveState(); renderStep();
+}
+function pickLabel(key){
+  const ms = getM(currentMissionId);
+  const m = MISSIONS.find(x=>x.id===currentMissionId);
+  if(ms.labelFirstTry===null){
+    ms.labelFirstTry = key;
+    ms.labelFirstCorrect = (key===m.correctLabel);
+  }
+  ms.label = key; saveState(); renderStep();
+}
+function nextStep(){
+  const ms = getM(currentMissionId);
+  ms.step = Math.min(ms.step+1, 6);
+  if(ms.step===6) ms.done = true;
+  saveState(); renderStep();
+}
+function prevStep(){
+  const ms = getM(currentMissionId);
+  ms.step = Math.max(ms.step-1, 0);
+  saveState(); renderStep();
+}
+
+/* ============ SKETCH ENGINE ============ */
+const SKETCH_COLORS = ['#2E2A24','#C4472B','#3E6680','#6B8F71','#E8A33D'];
+const sketchRigs = {}; // key: 'before'/'after' -> {canvas, ctx, undoStack, color}
+
+function initSketchStep(){
+  ['before','after'].forEach(key=>{
+    setupCanvasRig(key);
+  });
+}
+
+function setupCanvasRig(key){
+  const canvas = document.getElementById('canvas-'+key);
+  const ms = getM(currentMissionId);
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const cssW = rect.width || 280;
+  const cssH = 170;
+  canvas.width = cssW * dpr;
+  canvas.height = cssH * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 4;
+
+  const rig = { canvas, ctx, cssW, cssH, undoStack: [], color: SKETCH_COLORS[0], drawing:false, lastX:0, lastY:0 };
+  sketchRigs[key] = rig;
+
+  // restore saved drawing, if any
+  const saved = key==='before' ? ms.sketchBefore : ms.sketchAfter;
+  if(saved){
+    const img = new Image();
+    img.onload = ()=>{ ctx.drawImage(img, 0, 0, cssW, cssH); };
+    img.src = saved;
+  }
+
+  function getPos(e){
+    const r = canvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  function pushUndoSnapshot(){
+    try{
+      rig.undoStack.push(canvas.toDataURL('image/png'));
+      if(rig.undoStack.length>12) rig.undoStack.shift();
+    }catch(e){}
+  }
+
+  function pointerDown(e){
+    e.preventDefault();
+    pushUndoSnapshot();
+    rig.drawing = true;
+    const p = getPos(e);
+    rig.lastX = p.x; rig.lastY = p.y;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, ctx.lineWidth/2, 0, Math.PI*2);
+    ctx.fillStyle = rig.color;
+    ctx.fill();
+  }
+  function pointerMove(e){
+    if(!rig.drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    ctx.strokeStyle = rig.color;
+    ctx.beginPath();
+    ctx.moveTo(rig.lastX, rig.lastY);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    rig.lastX = p.x; rig.lastY = p.y;
+  }
+  function pointerUp(e){
+    if(!rig.drawing) return;
+    rig.drawing = false;
+    persistCanvas(key);
+  }
+
+  canvas.addEventListener('pointerdown', pointerDown);
+  canvas.addEventListener('pointermove', pointerMove);
+  window.addEventListener('pointerup', pointerUp);
+
+  renderSketchTools(key);
+}
+
+function renderSketchTools(key){
+  const rig = sketchRigs[key];
+  const wrap = document.getElementById('tools-'+key);
+  let html = '';
+  SKETCH_COLORS.forEach(c=>{
+    html += `<div class="swatch ${rig.color===c?'on':''}" style="background:${c}" onclick="setSketchColor('${key}','${c}')"></div>`;
+  });
+  html += `<button class="toolbtn" onclick="undoSketch('${key}')">Undo</button>`;
+  html += `<button class="toolbtn" onclick="clearSketch('${key}')">Clear</button>`;
+  wrap.innerHTML = html;
+}
+
+function setSketchColor(key, color){
+  sketchRigs[key].color = color;
+  renderSketchTools(key);
+}
+
+function undoSketch(key){
+  const rig = sketchRigs[key];
+  if(rig.undoStack.length===0){ clearSketch(key); return; }
+  const prev = rig.undoStack.pop();
+  const img = new Image();
+  img.onload = ()=>{
+    rig.ctx.clearRect(0,0,rig.cssW,rig.cssH);
+    rig.ctx.drawImage(img, 0, 0, rig.cssW, rig.cssH);
+    persistCanvas(key);
+  };
+  img.src = prev;
+}
+
+function clearSketch(key){
+  const rig = sketchRigs[key];
+  rig.ctx.clearRect(0,0,rig.cssW,rig.cssH);
+  rig.undoStack = [];
+  persistCanvas(key);
+}
+
+function persistCanvas(key){
+  const rig = sketchRigs[key];
+  const ms = getM(currentMissionId);
+  const dataUrl = rig.canvas.toDataURL('image/png');
+  if(key==='before') ms.sketchBefore = dataUrl; else ms.sketchAfter = dataUrl;
+  saveState();
+}
+
+/* ============ SUMMARY / COOKBOOK SHARED CARD ============ */
+function sumCardHTML(m, ms){
+  const noticeText = ms.notice.map(i=>m.notice[i]).join(', ') || '—';
+  const guessText = ms.guessOwn && ms.guessOwn.trim().length>0 ? ms.guessOwn : (ms.guess!==null ? m.guessPresets[ms.guess] : '—');
+  const watchText = ms.watch.map(i=>m.watch[i]).join(', ') || '—';
+  const explainText = ms.explainWord!==null ? m.sentenceTemplate.replace('___', m.wordbank[ms.explainWord]) : '—';
+  const labelText = ms.label===m.labelA.key ? m.labelA.text : m.labelB.text;
+  return `
+    <div class="sumcard">
+      <div class="sumrow"><div class="k">I NOTICED</div><div class="v">${noticeText}</div></div>
+      <div class="sumrow"><div class="k">MY GUESS</div><div class="v">${guessText}</div></div>
+      <div class="sumrow"><div class="k">WHAT HAPPENED</div><div class="v">${watchText}</div></div>
+      ${(ms.sketchBefore||ms.sketchAfter) ? `<div class="sumrow"><div class="k">MY SKETCHES</div><div class="sketchsumrow">
+        ${ms.sketchBefore?`<img class="sketchthumb" src="${ms.sketchBefore}" alt="Before sketch">`:''}
+        ${ms.sketchAfter?`<img class="sketchthumb" src="${ms.sketchAfter}" alt="After sketch">`:''}
+      </div></div>` : ''}
+      <div class="sumrow"><div class="k">MY EXPLANATION</div><div class="v">${explainText}</div></div>
+      <div class="sumrow"><div class="k">TYPE OF CHANGE</div><div class="v">${labelText}</div></div>
+    </div>`;
+}
+
+function renderSummary(m, ms){
+  const area = document.getElementById('stepArea');
+  area.innerHTML = `
+    <div class="summary">
+      <div class="donebadge">Mission complete ✓</div>
+      <h2>${m.emoji} ${m.title} — Lab Card</h2>
+      <div class="sub">Here's everything you figured out. It's saved in your Cookbook.</div>
+      ${sumCardHTML(m, ms)}
+      <button class="homebtn" onclick="goHome()">Back to Chem Lab</button>
+    </div>
+  `;
+}
+
+/* ============ COOKBOOK ============ */
+function openCookbook(){
+  document.getElementById('homeview').style.display='none';
+  document.getElementById('missionview').classList.remove('active');
+  document.getElementById('cookbookview').classList.add('active');
+  renderCookbook();
+}
+
+function renderCookbook(){
+  const done = MISSIONS.filter(m=>getM(m.id).done);
+  const area = document.getElementById('cookbookArea');
+  if(done.length===0){
+    area.innerHTML = `<div class="stepcard" style="text-align:center;">
+      <p style="font-size:15px;color:var(--text-muted);margin:6px 0 0;">Finish a recipe and it'll show up here for revision — with your notes, guesses and sketches all together.</p>
+    </div>`;
+    return;
+  }
+  let html = `<button class="nextbtn" style="margin-bottom:18px;" onclick="exportAnkiCSV()">⬇️ Export ${done.length} recipe${done.length>1?'s':''} to Anki</button>`;
+  done.forEach(m=>{
+    const ms = getM(m.id);
+    const zone = ZONES.find(z=>z.id===m.zone);
+    html += `<div class="cookbookentry">
+      <div class="zoneflag">${zone.emoji} ${zone.title}</div>
+      <h3 class="mtitle" style="font-size:19px;">${m.emoji} ${m.title}</h3>
+      ${sumCardHTML(m, ms)}
+    </div>`;
+  });
+  area.innerHTML = html;
+}
+
+/* ============ ANKI CSV EXPORT ============ */
+function csvField(text){
+  return '"' + String(text).replace(/"/g,'""').replace(/\n/g,'<br>') + '"';
+}
+
+function exportAnkiCSV(){
+  const rows = [];
+  MISSIONS.filter(m=>getM(m.id).done).forEach(m=>{
+    const ms = getM(m.id);
+    const noticeText = ms.notice.map(i=>m.notice[i]).join(', ') || '—';
+
+    // Card 1: concept check (physical/chemical, solution/suspension, etc.)
+    const conceptFront = `Kitchen Chemistry — ${m.title}: ${m.labelA.text} or ${m.labelB.text}?`;
+    const correctLabelText = m.correctLabel===m.labelA.key ? m.labelA.text : m.labelB.text;
+    const conceptBack = `${correctLabelText}<br><br>${m.feedback}`;
+    rows.push([conceptFront, conceptBack]);
+
+    // Card 2: recall what happened
+    const watchFront = `Kitchen Chemistry — ${m.title}: What did you notice happen?`;
+    const watchBack = noticeText;
+    rows.push([watchFront, watchBack]);
+
+    // Card 3: explain the sentence
+    const explainFront = `Kitchen Chemistry — ${m.title}: Finish the sentence — ${m.sentenceTemplate}`;
+    const explainBack = m.sentenceTemplate.replace('___', '<b>'+m.correctWord+'</b>');
+    rows.push([explainFront, explainBack]);
+  });
+
+  const csvLines = rows.map(r => r.map(csvField).join(',')).join('\r\n');
+  const blob = new Blob([csvLines], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'kitchen-chemistry-lab-flashcards.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 3000);
+}
+
+/* ============ INIT ============ */
+renderHome();
+</script>
+</body>
+</html>
