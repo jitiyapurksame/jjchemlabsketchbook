@@ -29,6 +29,8 @@
     --kitchen-accent:#E0954A;
     --titanic-accent:#5B93B0;
     --pixel-accent:#D64550;
+    --icekingdom-accent:#7EC8D8;
+    --mindlab-accent:#C97BAE;
 
     /* paper pages (diagrams / sketch canvases / interactive step cards) */
     --paper:#FAF3E3;
@@ -87,6 +89,8 @@
   .zonesection.zone-kitchen{--zone-accent:var(--kitchen-accent);}
   .zonesection.zone-titanic{--zone-accent:var(--titanic-accent);}
   .zonesection.zone-pixel{--zone-accent:var(--pixel-accent);}
+  .zonesection.zone-icekingdom{--zone-accent:var(--icekingdom-accent);}
+  .zonesection.zone-mindlab{--zone-accent:var(--mindlab-accent);}
   .zoneheader{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;}
   .zoneheader h2{font-size:18px;margin:0;color:var(--text-light);}
   .zoneheader .zprog{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap;}
@@ -128,6 +132,28 @@
   .diagram-box{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
     padding:14px;margin-bottom:16px;box-shadow:0 6px 16px rgba(0,0,0,0.35);}
   .diagram-box svg{width:100%;height:auto;display:block;}
+
+  /* ---- Zoom In (Phase 5.3) ---- */
+  .zoombtn{width:100%;background:var(--navy-card-alt);border:1.5px dashed var(--gold);color:var(--gold);
+    border-radius:14px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:16px;}
+  .zoombtn:active{background:rgba(227,179,65,0.14);}
+  .zoompanel{background:var(--navy-card);border:1.5px solid var(--gold);border-radius:var(--radius);
+    padding:16px;margin-bottom:16px;}
+  .zoomkicker{font-size:12px;font-weight:700;letter-spacing:0.5px;color:var(--gold);margin:0 0 10px;}
+  .zoom-diagram-box{background:var(--paper);border:1px solid var(--line);border-radius:12px;
+    padding:10px;margin-bottom:12px;}
+  .zoom-diagram-box svg{width:100%;height:auto;display:block;}
+  .zoomline{font-size:15px;color:var(--text-light);line-height:1.4;margin:0 0 4px;}
+  .zoomq{font-size:15px;font-weight:700;color:var(--text-light);margin:10px 0 12px;}
+  .zoomchoices{display:flex;gap:9px;margin-bottom:12px;}
+  .zoomchoice{flex:1;border:1.5px solid var(--navy-border);background:var(--navy-card-alt);
+    border-radius:12px;padding:12px 8px;font-size:14px;font-weight:700;text-align:center;cursor:pointer;color:var(--text-light);}
+  .zoomchoice.right{border-color:var(--sage);background:rgba(111,162,132,0.18);color:#B9D9C4;}
+  .zoomchoice.wrong{border-color:var(--tomato);background:rgba(217,114,75,0.14);color:#E8B39F;}
+  .zoomexplain{padding:12px;background:rgba(227,179,65,0.08);border-left:4px solid var(--gold);
+    border-radius:8px;font-size:14px;line-height:1.4;color:var(--text-light);}
+  .zoomclose{background:none;border:none;color:var(--text-muted);font-size:13px;font-weight:600;
+    cursor:pointer;margin-top:12px;padding:0;}
 
   .dots{display:flex;gap:7px;justify-content:center;margin-bottom:16px;}
   .dot{width:9px;height:9px;border-radius:50%;background:var(--navy-border);}
@@ -208,6 +234,38 @@
   .sketchthumb{width:130px;height:auto;border-radius:10px;border:1px solid var(--line);background:#fff;}
   .homebtn{width:100%;margin-top:18px;background:linear-gradient(180deg,var(--gold),var(--gold-dark));color:#241A05;border:none;border-radius:14px;
     padding:14px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 3px 0 #8C6A20;}
+
+  /* ---- Launch Pad (Phase 5.4) ---- */
+  .launchpad{width:100%;background:linear-gradient(180deg,#D9724B,#B85A38);color:#FFF3EA;border:none;
+    border-radius:16px;padding:18px;font-size:18px;font-weight:800;cursor:pointer;
+    box-shadow:0 4px 0 #7C3E26;margin:14px 0 4px;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .launchpad:active{transform:translateY(2px);box-shadow:0 2px 0 #7C3E26;}
+  .launchpad-sub{font-size:12px;text-align:center;color:var(--text-muted);margin-bottom:14px;}
+  .started-label{font-size:12px;color:var(--text-muted);text-align:center;margin:-4px 0 14px;}
+
+  /* ---- Cold Start Mode (Phase 5.5) ---- */
+  .examrow{display:flex;gap:8px;margin-top:10px;}
+  .exambtn{flex:1;border-radius:12px;padding:9px 6px;font-size:12px;font-weight:700;text-align:center;
+    cursor:pointer;border:1.5px solid var(--navy-border);background:var(--navy-card-alt);color:var(--text-light);}
+  .exambtn.fading{border-color:#D9A94A;color:#D9A94A;}
+  .exambtn.coldstart{border-color:#D9724B;color:#F3B79B;}
+  .exambtn.locked{opacity:0.35;cursor:default;border-style:dashed;}
+  .examlevel{display:inline-block;font-size:12px;font-weight:800;letter-spacing:0.5px;padding:6px 12px;
+    border-radius:20px;margin-bottom:12px;}
+  .examlevel.fading{background:rgba(217,169,74,0.16);color:#E3B34A;border:1px solid #D9A94A;}
+  .examlevel.coldstart{background:rgba(217,114,75,0.16);color:#F3B79B;border:1px solid #D9724B;}
+  .examblank{width:100%;box-sizing:border-box;background:var(--paper-card);border:1px solid var(--line);
+    border-radius:12px;padding:12px;font-size:15px;font-family:inherit;color:#241A05;margin-bottom:16px;resize:vertical;}
+  .examq{font-size:14px;font-weight:700;color:var(--text-light);margin:0 0 8px;}
+  .examhint{font-size:12px;color:var(--text-muted);margin:-4px 0 10px;}
+  .examcanvaswrap{background:var(--paper-card);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    box-shadow:0 6px 16px rgba(0,0,0,0.3);margin-bottom:10px;}
+  .examcanvas{width:100%;height:260px;display:block;touch-action:none;}
+  .timerbtn{background:none;border:1.5px dashed var(--text-muted);color:var(--text-muted);border-radius:12px;
+    padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:14px;}
+  .timerbtn.running{border-color:var(--gold);color:var(--gold);}
+  .examreveal{padding:14px;background:rgba(111,162,132,0.10);border-left:4px solid var(--sage);
+    border-radius:8px;font-size:14px;line-height:1.5;color:var(--text-light);margin-top:6px;}
 </style>
 </head>
 <body>
@@ -238,6 +296,8 @@
       <div class="sub" id="headerSubTag">Two worlds. One ship. Real reactions.</div>
       <div class="sub2" id="headerSub">Experiments across ocean liners and kitchens. What are you exploring today?</div>
     </div>
+    <button class="launchpad" onclick="launchJustStart()">🚀 Just Start</button>
+    <div class="launchpad-sub" id="launchPadMsg">Picks one mission for you. No scrolling, no deciding.</div>
     <div class="progress-wrap">
       <div class="progress-top-row">
         <div class="progress-label" id="progLabel">0 of 10 missions done</div>
@@ -245,6 +305,8 @@
       </div>
       <div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
     </div>
+    <div class="started-label" id="startedLabel">🚀 0 missions started</div>
+    <div class="started-label" id="coldstartLabel">🔴 0 Cold Start missions completed</div>
     <div class="badgerow" id="badgeRow"></div>
     <button class="cookbookbtn" onclick="openCookbook()">📖 My Cookbook — revise finished recipes</button>
     <div id="zonesArea"></div>
@@ -256,8 +318,17 @@
     <h2 class="mtitle" id="mTitle"></h2>
     <p class="mstory" id="mStory"></p>
     <div class="diagram-box" id="mDiagram"></div>
+    <div id="zoomArea"></div>
     <div class="dots" id="mDots"></div>
     <div id="stepArea"></div>
+  </div>
+
+  <div class="missionview" id="examview">
+    <button class="backbtn" onclick="goHome()">‹ Back to Chem Lab</button>
+    <div class="examlevel" id="examLevelPill"></div>
+    <h2 class="mtitle" id="examTitle"></h2>
+    <div class="diagram-box" id="examDiagram"></div>
+    <div id="examArea"></div>
   </div>
 
   <div class="missionview" id="cookbookview">
@@ -652,15 +723,353 @@ const MISSIONS = [
     labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
     correctLabel:'physical',
     feedback:'This is a physical change! The mushroom absorbs water and swells up, then releases that water and shrinks back down in dry air \u2014 the same trick real sponges (and gummy sweets!) use. No new substance is formed, just a change in how much water is soaked into it.'
+  },
+  {
+    id:'fountain', zone:'icekingdom', emoji:'⛲', title:'Freezing the Fountain',
+    story:"A courtyard fountain bubbles with flowing water all afternoon. Overnight, the temperature drops far below freezing \u2014 by morning the entire fountain is a solid block of ice. By the following afternoon, it's flowing water again.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M35 90 Q45 60 65 90 Q85 60 95 90" stroke="#5B93B0" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="65" cy="95" rx="35" ry="8" fill="#BEE3F0"/>
+      <text x="65" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Flowing water</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u2744\ufe0f\u2192</text>
+      <path d="M215 65 Q225 55 235 65 Q245 55 255 65" stroke="#8FC6DB" stroke-width="3" fill="none"/>
+      <ellipse cx="235" cy="95" rx="35" ry="18" fill="#BEE3F0" stroke="#5B93B0" stroke-width="2"/>
+      <text x="235" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Frozen solid</text>
+    </svg>`,
+    notice:['Water stopped flowing','Surface went hard and solid','Turned cloudy/white-ish','Went back to flowing the next warm afternoon'],
+    guessPresets:['Once it freezes solid, it can never flow as water again','If it warms back up, the ice will melt and flow again \u2014 same water the whole time'],
+    watch:['Water froze into solid ice overnight','Ice melted back into flowing water the next day','No new smell or substance appeared','It\u2019s still the exact same water, just colder or warmer'],
+    sentenceTemplate:'Freezing and melting only change water\u2019s ___, not what it\u2019s made of.',
+    wordbank:['state (solid/liquid)','ingredients','colour forever','weight'],
+    correctWord:'state (solid/liquid)',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change! Freezing and melting only change water\u2019s state \u2014 it\u2019s the exact same water the whole time, just rearranged into a solid or liquid depending on the temperature. Warm it up and it flows again, freeze it and it locks solid, over and over.'
+  },
+  {
+    id:'saltsteps', zone:'icekingdom', emoji:'🧂', title:'Salt on the Palace Steps',
+    story:"Guards scatter salt across the icy palace steps before the morning rush. Even though it's well below freezing outside, the ice on the steps slowly turns to slush and melts away.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="70" width="70" height="12" fill="#BEE3F0"/>
+      <rect x="30" y="85" width="70" height="12" fill="#BEE3F0"/>
+      <text x="65" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Icy steps</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u{1F9C2}\u2192</text>
+      <rect x="205" y="70" width="70" height="12" fill="#DDE6EA"/>
+      <rect x="205" y="85" width="70" height="12" fill="#DDE6EA"/>
+      <circle cx="220" cy="76" r="2" fill="#fff"/><circle cx="240" cy="90" r="2" fill="#fff"/>
+      <circle cx="260" cy="76" r="2" fill="#fff"/><circle cx="230" cy="90" r="2" fill="#fff"/>
+      <text x="240" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Melting slush</text>
+    </svg>`,
+    notice:['Ice turned slushy where salt landed','Steps became wet, not icy','Still very cold outside the whole time','Untouched ice patches stayed frozen'],
+    guessPresets:['Salt must be warm and heats the ice up to melt it','Salt makes it harder for water to stay frozen, even at cold temperatures'],
+    watch:['Salted ice turned to slush and melted','Un-salted ice nearby stayed frozen solid','No new smell or gas appeared','The water could be re-frozen into ice again'],
+    sentenceTemplate:'Salt mixes into the ice\u2019s surface and makes it much harder for the water to stay frozen, so the ice ___ even in freezing air.',
+    wordbank:['melts','freezes harder','evaporates','boils'],
+    correctWord:'melts',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change! Salt lowers the temperature at which water can stay frozen (this is why icy roads get gritted with salt in real winters too). The water and salt are still just water and salt \u2014 nothing new was created, and the water could be frozen solid again if it got cold enough.'
+  },
+  {
+    id:'vanishingice', zone:'icekingdom', emoji:'🌫️', title:'The Vanishing Ice Blocks',
+    story:"Strange, extra-cold ice blocks sit in a bowl of warm water for a royal feast. Instead of melting into a puddle like normal ice, they shrink away into thick white fog \u2014 and disappear completely, with no puddle left behind at all.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="45" y="55" width="40" height="35" rx="4" fill="#E8F4F8" stroke="#5B93B0" stroke-width="2"/>
+      <path d="M40 45 Q50 30 60 45" stroke="#DDE6EA" stroke-width="3" fill="none"/>
+      <text x="65" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Extra-cold block</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u{1F4A8}\u2192</text>
+      <ellipse cx="235" cy="70" rx="42" ry="26" fill="#EAF3F8" opacity="0.7"/>
+      <ellipse cx="220" cy="60" rx="18" ry="12" fill="#EAF3F8" opacity="0.6"/>
+      <ellipse cx="250" cy="80" rx="20" ry="13" fill="#EAF3F8" opacity="0.6"/>
+      <text x="235" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Thick fog, no puddle</text>
+    </svg>`,
+    notice:['Block shrank away without leaving a puddle','Thick white fog poured off it','It got much smaller very quickly','No liquid was left in the bowl'],
+    guessPresets:['This ice must have melted into an invisible liquid we just can\u2019t see','This ice turned straight into a gas, skipping the liquid stage completely'],
+    watch:['Block shrank directly into fog/gas','No liquid puddle was ever left behind','The fog spread out and faded into the air','It disappeared much faster than normal ice'],
+    sentenceTemplate:'Some solids can turn straight into a gas without ever becoming a liquid first \u2014 this is called ___.',
+    wordbank:['sublimation','evaporation','condensation','freezing'],
+    correctWord:'sublimation',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change called sublimation! Most ice melts into liquid first, but this super-cold solid (real ones like dry ice do this) turns directly into a gas. It\u2019s still the same substance the whole time \u2014 just skipping the liquid stage on its way from solid to gas.'
+  },
+  {
+    id:'handwarmer', zone:'icekingdom', emoji:'🧤', title:'The Enchanted Hand Warmer',
+    story:"A traveller crossing the kingdom carries a small grey packet in her mittens. She opens it, gives it a shake, and within minutes it's warm to the touch \u2014 and the grey powder inside has turned a rusty orange-brown.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="35" y="55" width="55" height="40" rx="6" fill="#B9BFC4"/>
+      <text x="62" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Grey powder, cold</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u{1FA84}\u2192</text>
+      <rect x="210" y="55" width="55" height="40" rx="6" fill="#C4602B"/>
+      <path d="M205 50 Q212 40 218 50 M225 45 Q232 35 238 45" stroke="#E8A33D" stroke-width="2" fill="none" opacity="0.7"/>
+      <text x="237" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Orange-brown, warm</text>
+    </svg>`,
+    notice:['Powder changed from grey to orange-brown','Packet became warm on its own','Colour change spread through the whole packet','Stayed warm for a long while, then cooled'],
+    guessPresets:['The powder is just heating up and changing colour temporarily, like metal in a fire','The powder is reacting with the air to form a new substance, giving off heat as it does'],
+    watch:['Powder turned rusty orange-brown','Packet felt warm to the touch','The colour change did not reverse once it cooled','Shaking it let in more air, speeding up the change'],
+    sentenceTemplate:'Inside the packet, iron powder reacts with oxygen in the air, releasing heat as it slowly turns into ___.',
+    wordbank:['rust (iron oxide)','ice','salt','ash'],
+    correctWord:'rust (iron oxide)',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'chemical',
+    feedback:'This is a chemical change! Fine iron powder reacts with oxygen in the air \u2014 the exact same reaction as rust forming, just much faster because the powder has so much surface area. This reaction releases heat, which is exactly how real hand warmers work. Once it\u2019s turned to rust, there\u2019s no shaking it back into fresh iron powder.'
+  },
+  {
+    id:'kettlegreen', zone:'icekingdom', emoji:'🫖', title:'The Kettle Turns Green',
+    story:"A shining copper kettle hangs outside the kitchen window all winter, exposed to damp, frosty air. Months later, its bright orange-copper shine has turned into a dull blue-green coating all over the surface.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 60 Q40 45 65 45 Q90 45 90 60 L90 90 Q90 100 65 100 Q40 100 40 90 Z" fill="#D9824A"/>
+      <path d="M90 65 Q105 62 108 70" stroke="#D9824A" stroke-width="4" fill="none"/>
+      <text x="65" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Shiny copper</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u2744\ufe0f\u2192</text>
+      <path d="M210 60 Q210 45 235 45 Q260 45 260 60 L260 90 Q260 100 235 100 Q210 100 210 90 Z" fill="#5FA48A"/>
+      <path d="M260 65 Q275 62 278 70" stroke="#5FA48A" stroke-width="4" fill="none"/>
+      <text x="235" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Blue-green coating</text>
+    </svg>`,
+    notice:['Colour changed from orange-copper to blue-green','Coating felt slightly rough, not shiny','Happened gradually over weeks/months','Coating didn\u2019t wash off with just water'],
+    guessPresets:['The green layer can be polished off to reveal the same shiny copper underneath, unchanged','The green layer is a brand new substance made from the copper reacting with the air'],
+    watch:['Coating spread slowly across the whole kettle','Colour stayed blue-green, never went back to orange on its own','Coating felt different to bare copper','Happened faster in damp, salty air'],
+    sentenceTemplate:'Copper reacts slowly with air and moisture to form a new blue-green substance called ___.',
+    wordbank:['verdigris (copper carbonate)','rust','frost','ash'],
+    correctWord:'verdigris (copper carbonate)',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'chemical',
+    feedback:'This is a chemical change! Copper reacts with oxygen and moisture in the air to form verdigris \u2014 a completely new blue-green substance (it\u2019s the same reaction that turns the Statue of Liberty green). Unlike a quick polish removing dust, this coating is chemically different from copper and won\u2019t just wipe away.'
+  },
+  {
+    id:'goosebumps', zone:'mindlab', emoji:'🥶', title:'Goosebumps in the Cold',
+    story:"Stepping outside on a freezing morning, the skin on your arms suddenly goes bumpy, with every tiny hair standing on end. A few minutes back in the warmth, and your skin is completely smooth again.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="50" width="70" height="40" rx="18" fill="#F0D9B5"/>
+      <text x="65" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Smooth, warm skin</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u2744\ufe0f\u2192</text>
+      <rect x="200" y="50" width="70" height="40" rx="18" fill="#F0D9B5"/>
+      <circle cx="215" cy="62" r="3" fill="#D9B98A"/><circle cx="230" cy="72" r="3" fill="#D9B98A"/>
+      <circle cx="245" cy="60" r="3" fill="#D9B98A"/><circle cx="258" cy="75" r="3" fill="#D9B98A"/>
+      <circle cx="222" cy="80" r="3" fill="#D9B98A"/><circle cx="250" cy="85" r="3" fill="#D9B98A"/>
+      <text x="235" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Bumpy skin, cold</text>
+    </svg>`,
+    notice:['Skin went bumpy all over','Tiny hairs stood upright','Skin felt cooler to the touch','Went back to smooth once warmed up'],
+    guessPresets:['Once your skin goes bumpy, it stays that way until it grows out','Tiny muscles pull the skin up, and they relax back down once you\u2019re warm again'],
+    watch:['Bumps appeared quickly in the cold','Bumps disappeared once warmed up','No new substance appeared on the skin','Skin looked and felt the same as before once smooth again'],
+    sentenceTemplate:'Goosebumps happen when tiny muscles under the skin ___, and they relax back down once you warm up.',
+    wordbank:['contract (pull tight)','dissolve','evaporate','freeze solid'],
+    correctWord:'contract (pull tight)',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change! Tiny muscles attached to each hair contract in the cold, pulling the skin up into bumps \u2014 then relax back down once you warm up. It\u2019s the exact same skin the whole time, just temporarily reshaped, nothing new is formed.'
+  },
+  {
+    id:'sweating', zone:'mindlab', emoji:'💦', title:'Sweating It Out',
+    story:"Right before stepping on stage for a big performance, your palms and forehead start to feel damp. A few minutes after it's over, your skin is completely dry again.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="50" width="70" height="40" rx="18" fill="#F0D9B5"/>
+      <text x="65" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Dry skin</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u{1F630}\u2192</text>
+      <rect x="200" y="50" width="70" height="40" rx="18" fill="#F0D9B5"/>
+      <ellipse cx="218" cy="60" rx="3" ry="5" fill="#8FC6DB"/>
+      <ellipse cx="238" cy="72" rx="3" ry="5" fill="#8FC6DB"/>
+      <ellipse cx="255" cy="62" rx="3" ry="5" fill="#8FC6DB"/>
+      <ellipse cx="228" cy="82" rx="3" ry="5" fill="#8FC6DB"/>
+      <text x="235" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Damp with sweat</text>
+    </svg>`,
+    notice:['Skin felt damp/wet','Small droplets appeared','Skin cooled down slightly','Dried off completely afterwards, with nothing left behind'],
+    guessPresets:['The sweat leaves a permanent damp layer that never fully goes away','The sweat evaporates completely off the skin, leaving nothing behind'],
+    watch:['Droplets appeared on the skin','Droplets evaporated away over time','Skin returned to exactly how it was before','No residue or new substance was left behind'],
+    sentenceTemplate:'Sweat is released to cool the body, then ___ off the skin into the air, leaving nothing behind.',
+    wordbank:['evaporates','freezes','burns','dissolves the skin'],
+    correctWord:'evaporates',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change! Sweat is mostly water, released onto the skin and then evaporated away into the air, which cools you down. Nothing new is created and nothing is left behind \u2014 your skin is exactly the same once it dries.'
+  },
+  {
+    id:'cracker', zone:'mindlab', emoji:'🍞', title:'The Cracker That Turns Sweet',
+    story:"You pop a plain, starchy cracker in your mouth \u2014 barely any flavour at first. But if you keep chewing it slowly for a minute without swallowing, it gradually starts tasting noticeably sweeter.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="35" y="55" width="55" height="35" rx="4" fill="#E8CB93"/>
+      <circle cx="50" cy="65" r="2" fill="#C9A968"/><circle cx="70" cy="72" r="2" fill="#C9A968"/>
+      <circle cx="60" cy="80" r="2" fill="#C9A968"/>
+      <text x="62" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Plain, starchy</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u{1F445}\u2192</text>
+      <rect x="210" y="55" width="55" height="35" rx="4" fill="#F2DDA0"/>
+      <path d="M215 50 Q225 40 235 50 M240 45 Q250 35 260 45" stroke="#E8A33D" stroke-width="2" fill="none" opacity="0.6"/>
+      <text x="237" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Tastes sweet now</text>
+    </svg>`,
+    notice:['Taste changed from plain to sweet','Texture got softer while chewing','Cracker started to feel mushy','Sweetness kept building the longer you chewed'],
+    guessPresets:['Chewing just breaks the cracker into smaller pieces of the same starchy substance','Something in your mouth is turning the starch into a different, sweeter substance'],
+    watch:['Taste changed noticeably to sweet','Texture changed from crunchy to soft/mushy','The sweet taste did not fade back to plain while still chewing','This only happens with slow, long chewing, not a quick bite'],
+    sentenceTemplate:'An enzyme in saliva breaks the starch down into ___, which tastes sweet on your tongue.',
+    wordbank:['sugar','salt','acid','fibre'],
+    correctWord:'sugar',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'chemical',
+    feedback:'This is a chemical change! An enzyme in your saliva breaks the starch molecules down into sugar molecules \u2014 a genuinely new substance with a different taste. Chewing alone (a physical change) would just make smaller starchy pieces; it\u2019s the enzyme reaction that makes it taste sweet.'
+  },
+  {
+    id:'stomachacid', zone:'mindlab', emoji:'🍽️', title:'Stomach Acid at Work',
+    story:"A meal arrives in the stomach as recognisable chunks of food. Strong stomach acid gets to work, and within a couple of hours, it has all been broken down into a completely different, unrecognisable soupy mixture.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="65" cy="70" rx="40" ry="30" fill="#E0A0A8"/>
+      <rect x="50" y="60" width="12" height="12" fill="#C4472B"/>
+      <circle cx="75" cy="65" r="7" fill="#E8CB93"/>
+      <rect x="55" y="80" width="10" height="10" fill="#6B8F71"/>
+      <text x="65" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Recognisable food</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u23F3\u2192</text>
+      <ellipse cx="235" cy="70" rx="40" ry="30" fill="#E0A0A8"/>
+      <ellipse cx="235" cy="72" rx="26" ry="16" fill="#C9A968" opacity="0.7"/>
+      <text x="235" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Broken-down mixture</text>
+    </svg>`,
+    notice:['Food shape completely disappeared','Turned into a soupy mixture','Took a couple of hours','Cannot recognise the original food anymore'],
+    guessPresets:['The stomach just squashes the food into smaller pieces of the same stuff','The acid reacts with the food, breaking it down into different, simpler substances'],
+    watch:['Food broke down into a soupy mixture','Original shape and texture were completely gone','New, simpler substances were produced for the body to absorb','This process cannot be reversed back into the original meal'],
+    sentenceTemplate:'Stomach acid reacts with food, breaking it down into ___ that the body can absorb.',
+    wordbank:['simpler new substances','the exact same substances, just smaller','frozen chunks','pure water'],
+    correctWord:'simpler new substances',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'chemical',
+    feedback:'This is a chemical change! Stomach acid and digestive enzymes react with food, breaking big molecules down into simpler new substances the body can absorb. Unlike chewing (which is physical), this is a real chemical reaction \u2014 there\u2019s no putting the meal back together afterward.'
+  },
+  {
+    id:'blushing', zone:'mindlab', emoji:'😳', title:'Blushing Cheeks',
+    story:"Called on to answer a question in front of the whole class, your cheeks suddenly feel hot and turn a visible shade of pink. A minute after sitting back down, your face is back to its normal colour.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="65" cy="60" r="32" fill="#F0D9B5"/>
+      <circle cx="52" cy="65" r="6" fill="#F0D9B5"/>
+      <circle cx="78" cy="65" r="6" fill="#F0D9B5"/>
+      <text x="65" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Normal colour</text>
+      <text x="150" y="60" text-anchor="middle" font-size="18">\u2192</text>
+      <circle cx="235" cy="60" r="32" fill="#F0D9B5"/>
+      <circle cx="222" cy="65" r="7" fill="#E8899B"/>
+      <circle cx="248" cy="65" r="7" fill="#E8899B"/>
+      <text x="235" y="107" text-anchor="middle" font-size="11" fill="#6B6459">Pink, blushing</text>
+    </svg>`,
+    notice:['Cheeks turned visibly pink','Face felt warm','Happened very quickly','Faded back to normal after a short while'],
+    guessPresets:['The pink colour is a permanent change to the skin\u2019s colouring','Blood vessels widen and bring more blood near the surface, then narrow back down'],
+    watch:['Cheeks turned pink quickly','Colour faded back to normal shortly after','No new substance appeared on the skin','Skin looked identical to before once it faded'],
+    sentenceTemplate:'Blushing happens when tiny blood vessels near the skin\u2019s surface ___, letting more blood show through.',
+    wordbank:['widen (dilate)','freeze','evaporate','dissolve'],
+    correctWord:'widen (dilate)',
+    labelA:{text:'Physical change (reversible)', key:'physical'},
+    labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
+    correctLabel:'physical',
+    feedback:'This is a physical change! Blood vessels near the surface of the skin widen, letting more blood show through and making cheeks look pink \u2014 then narrow back down once you\u2019ve calmed down. It\u2019s the same skin and the same blood the whole time, nothing new is created.'
   }
 ];
 const ZONES = [
   { id:'kitchen', emoji:'🍳', title:'Kitchen Chemistry', subtitle:'Cooking as a chemistry lab' },
   { id:'titanic', emoji:'⚙️', title:'Titanic Engine Room', subtitle:'Rust, steam, salt and coal aboard an ocean liner' },
-  { id:'pixel', emoji:'🍄', title:'Pixel Power Lab', subtitle:'Retro platformer physics \u2014 real chemistry, no cartridge required' }
+  { id:'pixel', emoji:'🍄', title:'Pixel Power Lab', subtitle:'Retro platformer physics \u2014 real chemistry, no cartridge required' },
+  { id:'icekingdom', emoji:'❄️', title:'Ice Kingdom', subtitle:'Frost, fountains and winter chemistry in a kingdom of snow' },
+  { id:'mindlab', emoji:'🧠', title:'Mind & Body Lab', subtitle:'The real chemistry behind everyday feelings and reactions' }
 ];
 
 
+
+
+/* ============ PHASE 5 WRITING RULES ============
+   Paste this checklist into any future "add content" request:
+   - Max 12 words per sentence. If longer, split it.
+   - One idea per line. Line breaks, not commas.
+   - Verbs first. "Watch the ice melt" not "The ice will be observed melting."
+   - Same icon = same idea everywhere (🧊 state change, ⚛️ atoms, 🔥 energy in/out).
+   - No block of text longer than 3 lines anywhere in the UI.
+   - Every word problem: 2 short lines + 1 question. Nothing more.
+================================================== */
+
+/* ============ WORDPROBLEMS (Phase 5.2) ============
+   5 short, themed problems per zone. Any mission can pull 1\u20132 that fit.
+   No trademarked character names, matching the rest of this app family.
+   Schema:
+   id, zone, emoji, lines:[line1, line2], question, answerKey ('physical'|'chemical'), explain
+================================================== */
+const WORDPROBLEMS = [
+  // \ud83c\udf73 Kitchen Chemistry
+  { id:'wp-k1', zone:'kitchen', emoji:'\ud83c\udf73', lines:['You fry an egg.','The white turns solid and stays solid.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'The heat makes new stuff. Cooling it down never turns it back to runny.' },
+  { id:'wp-k2', zone:'kitchen', emoji:'\ud83e\uddc8', lines:['Butter melts in a hot pan.','Put it in the fridge \u2014 it goes solid again.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Melting and freezing only change state. It is still the same butter.' },
+  { id:'wp-k3', zone:'kitchen', emoji:'\ud83c\udf5e', lines:['Bread dough rises in the oven.','You can\u2019t squash it back into raw dough.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'Heat locks in a new structure. Baking cannot be undone.' },
+  { id:'wp-k4', zone:'kitchen', emoji:'\ud83e\uddca', lines:['Ice cubes melt in your drink.','Freeze the water \u2014 you get ice again.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Melting and freezing water is fully reversible. Still just water.' },
+  { id:'wp-k5', zone:'kitchen', emoji:'\ud83d\udd25', lines:['Toast turns black and smells burnt.','You can\u2019t turn burnt toast back into bread.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'Burning makes new substances. There is no undo button.' },
+
+  // \u2699\ufe0f Titanic Engine Room
+  { id:'wp-t1', zone:'titanic', emoji:'\u2699\ufe0f', lines:['Iron rivets sit in salty sea air.','Orange rust spots slowly appear.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'Rust is a brand new substance. Iron can\u2019t un-rust itself.' },
+  { id:'wp-t2', zone:'titanic', emoji:'\ud83d\udca8', lines:['Water boils in the ship\u2019s boiler.','Steam rises up and drifts away.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Steam is still water, just as a gas. Cool it and it\u2019s water again.' },
+  { id:'wp-t3', zone:'titanic', emoji:'\ud83e\uddc2', lines:['Salt dissolves in the ship\u2019s water tank.','Boil the water away \u2014 salt is left behind.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Nothing new formed. The salt was just hiding in the water.' },
+  { id:'wp-t4', zone:'titanic', emoji:'\ud83d\udd25', lines:['Coal burns in the furnace.','Ash and smoke are left behind.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'Burning coal makes new substances. You can\u2019t turn ash back into coal.' },
+  { id:'wp-t5', zone:'titanic', emoji:'\ud83d\udccf', lines:['Metal rails get hot in the sun.','They expand and get slightly longer.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Cooling the metal shrinks it back down. Still the same metal.' },
+
+  // \ud83c\udf44 Pixel Power Lab
+  { id:'wp-p1', zone:'pixel', emoji:'\ud83e\uddca', lines:['An ice block sits near a fireball.','It melts into a puddle.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Melting ice is reversible. Freeze the puddle and it\u2019s ice again.' },
+  { id:'wp-p2', zone:'pixel', emoji:'\ud83e\uddea', lines:['A fizzing potion block pops open.','New bubbles and gas rush out.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'New gas being made is a big clue. Something new has formed.' },
+  { id:'wp-p3', zone:'pixel', emoji:'\ud83d\udd25', lines:['A wooden block touches lava.','It turns to ash and can\u2019t turn back.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'Burning wood makes ash and smoke. Ash can never become wood again.' },
+  { id:'wp-p4', zone:'pixel', emoji:'\ud83c\udf44', lines:['A power-up makes a character grow bigger.','Nothing new is made, just a bigger size.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Only size changed. It\u2019s still made of the exact same stuff.' },
+  { id:'wp-p5', zone:'pixel', emoji:'\ud83e\uddca', lines:['Frost builds up on a cold pipe.','Warm the pipe \u2014 the frost melts away.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Frost is just frozen water vapour. Warming it undoes it completely.' },
+
+  // \u2744\ufe0f Ice Kingdom
+  { id:'wp-i1', zone:'icekingdom', emoji:'\u26f2', lines:['A fountain freezes overnight in the cold.','Sunshine returns and it melts back to water.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Freezing and melting water is fully reversible. Still just water.' },
+  { id:'wp-i2', zone:'icekingdom', emoji:'\ud83e\uddc2', lines:['Salt is scattered on icy palace steps.','The ice melts even though it\u2019s still cold.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Salt just lowers the freezing point. No new substance is made.' },
+  { id:'wp-i3', zone:'icekingdom', emoji:'\ud83c\udf2b\ufe0f', lines:['An ice block sits in dry winter air.','It shrinks straight to mist \u2014 no puddle first.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'This is sublimation: solid straight to gas. Still just water.' },
+  { id:'wp-i4', zone:'icekingdom', emoji:'\ud83e\udde4', lines:['A hand warmer pack is snapped and shaken.','It heats up and can\u2019t be un-snapped.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'Snapping starts a reaction that makes heat. It can\u2019t be reversed.' },
+  { id:'wp-i5', zone:'icekingdom', emoji:'\ud83e\uddd6', lines:['A copper kettle sits in the palace kitchen.','Green patches slowly appear over time.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'The green patches are a new substance. Copper can\u2019t un-green itself.' },
+
+  // \ud83e\udde0 Mind & Body Lab
+  { id:'wp-m1', zone:'mindlab', emoji:'\ud83e\udd76', lines:['Skin gets cold outside in winter.','Tiny bumps pop up, then go away.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Skin just changes shape for a bit. Nothing new is made.' },
+  { id:'wp-m2', zone:'mindlab', emoji:'\ud83d\udca6', lines:['Running fast makes your skin sweaty.','It dries off and skin goes back to normal.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Sweat is just water leaving the body. Drying it changes nothing new.' },
+  { id:'wp-m3', zone:'mindlab', emoji:'\ud83c\udf5e', lines:['A cracker sits in your mouth a while.','It slowly starts to taste sweet.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'Saliva breaks the starch into sugar. That\u2019s a brand new substance.' },
+  { id:'wp-m4', zone:'mindlab', emoji:'\ud83c\udf7d\ufe0f', lines:['Food sits in your stomach after a meal.','Acid breaks it down into something new.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'Digestion makes new substances your body can use. It can\u2019t be undone.' },
+  { id:'wp-m5', zone:'mindlab', emoji:'\ud83d\ude33', lines:['Cheeks turn red when you feel shy.','Blood vessels widen, then narrow back down.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Same blood, same skin, the whole time. Just wider vessels for a moment.' }
+];
+
+/* ============ ZOOM IN LINKS (Phase 5.3) ============
+   Maps a mission id -> a WORDPROBLEMS id.
+   Only missions listed here get a "Zoom In" button.
+   Add one zone at a time as each batch is built \u2014 nothing else needs to change.
+================================================== */
+const ZOOM_LINKS = {
+  // Kitchen Chemistry (batch 1)
+  egg: 'wp-k1',
+  choc: 'wp-k2',
+  bread: 'wp-k3',
+  sugarflour: 'wp-k4',
+  oilwater: 'wp-k5',
+
+  // Titanic Engine Room (batch 2)
+  rust: 'wp-t1',
+  steam: 'wp-t2',
+  saltwater: 'wp-t3',
+  coal: 'wp-t4',
+  expand: 'wp-t5',
+
+  // Pixel Power Lab (batch 3)
+  icefireball: 'wp-p1',
+  fizzblock: 'wp-p2',
+  lavablock: 'wp-p3',
+  growshroom: 'wp-p4',
+  pipefrost: 'wp-p5',
+
+  // Ice Kingdom (batch 4)
+  fountain: 'wp-i1',
+  saltsteps: 'wp-i2',
+  vanishingice: 'wp-i3',
+  handwarmer: 'wp-i4',
+  kettlegreen: 'wp-i5',
+
+  // Mind & Body Lab (batch 5, final)
+  goosebumps: 'wp-m1',
+  sweating: 'wp-m2',
+  cracker: 'wp-m3',
+  stomachacid: 'wp-m4',
+  blushing: 'wp-m5'
+};
 
 const STORAGE_KEY = 'chem-lab-v1';
 
@@ -677,11 +1086,12 @@ function saveState(){
 }
 let state = loadState();
 function getM(id){
-  if(!state.missions[id]) state.missions[id] = { step:0, notice:[], guess:null, guessOwn:'', watch:[], sketchBefore:null, sketchAfter:null, explainWord:null, label:null, labelFirstTry:null, labelFirstCorrect:null, done:false };
+  if(!state.missions[id]) state.missions[id] = { step:0, notice:[], guess:null, guessOwn:'', watch:[], sketchBefore:null, sketchAfter:null, explainWord:null, label:null, labelFirstTry:null, labelFirstCorrect:null, done:false, started:false, fadingDone:false, coldstartDone:false, coldstartSketch:null };
   return state.missions[id];
 }
 
 let currentMissionId = null;
+let examState = { mode:null, notice:'', guess:'', watch:'', explain:'', label:'', checked:false, timerRunning:false, timerSeconds:0, timerInterval:null };
 
 /* ============ HOME VIEW ============ */
 const XP_PER_MISSION = 20;
@@ -693,6 +1103,10 @@ const BADGES = [
     check: () => MISSIONS.filter(m=>m.zone==='titanic').every(m=>getM(m.id).done) },
   { id:'pixel', emoji:'🍄', label:'Pixel Explorer',
     check: () => MISSIONS.filter(m=>m.zone==='pixel').every(m=>getM(m.id).done) },
+  { id:'icekingdom', emoji:'❄️', label:'Frost Keeper',
+    check: () => MISSIONS.filter(m=>m.zone==='icekingdom').every(m=>getM(m.id).done) },
+  { id:'mindlab', emoji:'🧠', label:'Body Chemist',
+    check: () => MISSIONS.filter(m=>m.zone==='mindlab').every(m=>getM(m.id).done) },
   { id:'detective', emoji:'🧪', label:'Change Detective',
     check: () => MISSIONS.filter(m=>getM(m.id).labelFirstCorrect===true).length>=5 },
   { id:'artist', emoji:'🎨', label:'Sketch Artist',
@@ -707,6 +1121,13 @@ function renderHome(){
   document.getElementById('progLabel').textContent = doneCount+' of '+MISSIONS.length+' missions done';
   document.getElementById('xpPill').textContent = '⭐ '+(doneCount*XP_PER_MISSION)+' XP';
   document.getElementById('headerSub').textContent = MISSIONS.length+' experiments across '+ZONES.length+' worlds. What are you exploring today?';
+  const startedCount = MISSIONS.filter(m=>getM(m.id).started).length;
+  document.getElementById('startedLabel').textContent = '🚀 '+startedCount+' mission'+(startedCount===1?'':'s')+' started';
+  const coldstartCount = MISSIONS.filter(m=>getM(m.id).coldstartDone).length;
+  document.getElementById('coldstartLabel').textContent = '🔴 '+coldstartCount+' Cold Start mission'+(coldstartCount===1?'':'s')+' completed';
+  document.getElementById('launchPadMsg').textContent = MISSIONS.every(m=>getM(m.id).done)
+    ? 'All missions complete! Amazing work. 🎉'
+    : 'Picks one mission for you. No scrolling, no deciding.';
 
   const badgeRow = document.getElementById('badgeRow');
   badgeRow.innerHTML = BADGES.map(b=>{
@@ -748,11 +1169,24 @@ function renderHome(){
       const card = document.createElement('div');
       card.className='rcard';
       card.onclick=()=>openMission(m.id);
+      let examRow = '';
+      if(ms.done){
+        const csLocked = !ms.fadingDone;
+        examRow = `<div class="examrow">
+          <div class="exambtn fading" onclick="event.stopPropagation(); startExam('${m.id}','fading')">
+            🟡 ${ms.fadingDone?'Fading ✓':'Fading Practice'}
+          </div>
+          <div class="exambtn coldstart ${csLocked?'locked':''}" onclick="${csLocked?'':`event.stopPropagation(); startExam('${m.id}','coldstart')`}">
+            🔴 ${ms.coldstartDone?'Cold Start ✓':(csLocked?'Cold Start (locked)':'Cold Start')}
+          </div>
+        </div>`;
+      }
       card.innerHTML = `
         <div class="emoji">${m.emoji}</div>
         <div class="info">
           <h3>${m.title}</h3>
           <p>${badgeText==='Not started' ? 'Tap to start' : (ms.done ? 'Mission complete' : 'Tap to continue')}</p>
+          ${examRow}
         </div>
         <div class="statuswrap">
           <div class="badge ${badgeClass}">${badgeText}</div>
@@ -766,10 +1200,162 @@ function renderHome(){
   });
 }
 
+/* ============ LAUNCH PAD (Phase 5.4) ============
+   Fixes the "starting" problem, not the chemistry.
+   Picks ONE mission automatically \u2014 never asks J.J. to choose.
+   Prefers a mission he's never opened; falls back to any unfinished one.
+================================================== */
+function launchJustStart(){
+  const fresh = MISSIONS.find(m => !getM(m.id).done && !getM(m.id).started);
+  const target = fresh || MISSIONS.find(m => !getM(m.id).done);
+  if(!target){ renderHome(); return; } // all done \u2014 message already shown in launchPadMsg
+
+  const ms = getM(target.id);
+  const isFreshStart = !ms.started;
+  ms.started = true;
+  if(isFreshStart && ms.step===0 && ms.notice.length===0){
+    ms.notice = [0]; // easiest chip, pre-highlighted \u2014 lowers the barrier to hit Next
+  }
+  saveState();
+  openMission(target.id);
+}
+
+/* ============ COLD START MODE (Phase 5.5) ============
+   A per-mission fade: 🟡 Fading (blank text boxes) then 🔴 Cold Start (blank page, exam-style).
+   Unlocked in order: mission must be done -> Fading unlocks -> fading done -> Cold Start unlocks.
+   He decides when he's done \u2014 nothing is auto-graded, nothing blocks him.
+   Not timed by default. No hints. This is the exam-day rehearsal.
+================================================== */
+function startExam(id, mode){
+  currentMissionId = id;
+  examState = { mode, notice:'', guess:'', watch:'', explain:'', label:'', checked:false, timerRunning:false, timerSeconds:0, timerInterval:null };
+  document.getElementById('homeview').style.display='none';
+  document.getElementById('missionview').classList.remove('active');
+  document.getElementById('cookbookview').classList.remove('active');
+  document.getElementById('examview').classList.add('active');
+  const m = MISSIONS.find(x=>x.id===id);
+  document.getElementById('examTitle').textContent = m.emoji+' '+m.title;
+  document.getElementById('examDiagram').innerHTML = m.diagram;
+  const pill = document.getElementById('examLevelPill');
+  pill.className = 'examlevel ' + mode;
+  pill.textContent = mode==='fading' ? '🟡 FADING PRACTICE \u2014 write it yourself' : '🔴 COLD START \u2014 EXAM MODE';
+  renderExamArea();
+}
+
+function renderExamArea(){
+  const m = MISSIONS.find(x=>x.id===currentMissionId);
+  if(examState.mode==='fading') renderFadingArea(m);
+  else renderColdStartArea(m);
+}
+
+function renderFadingArea(m){
+  const wrap = document.getElementById('examArea');
+  wrap.innerHTML = `
+    <div class="examq">What do you notice?</div>
+    <textarea class="examblank" rows="2" placeholder="Write it in your own words..." oninput="examState.notice=this.value">${examState.notice}</textarea>
+
+    <div class="examq">What do you think is really going on?</div>
+    <textarea class="examblank" rows="2" placeholder="I think..." oninput="examState.guess=this.value">${examState.guess}</textarea>
+
+    <div class="examq">What actually happened?</div>
+    <textarea class="examblank" rows="2" placeholder="Write it in your own words..." oninput="examState.watch=this.value">${examState.watch}</textarea>
+
+    <div class="examq">Finish the sentence</div>
+    <div class="examhint">${m.sentenceTemplate.replace('___','______')}</div>
+    <textarea class="examblank" rows="1" placeholder="Type the missing word..." oninput="examState.explain=this.value">${examState.explain}</textarea>
+
+    <div class="examq">Physical change or chemical change? Why?</div>
+    <textarea class="examblank" rows="2" placeholder="Your answer..." oninput="examState.label=this.value">${examState.label}</textarea>
+
+    <button class="homebtn" onclick="checkFadingWork()">✅ Check My Work</button>
+    <div id="examRevealArea"></div>
+  `;
+  if(examState.checked){
+    document.getElementById('examRevealArea').innerHTML = fadingReferenceHTML(m) +
+      `<button class="homebtn" style="margin-top:14px;" onclick="finishFading()">🏁 Mark Fading Complete</button>`;
+  }
+}
+
+function fadingReferenceHTML(m){
+  const labelText = m.correctLabel===m.labelA.key ? m.labelA.text : m.labelB.text;
+  return `<div class="examreveal">
+    <b>Things you could have noticed:</b> ${m.notice.join(' \u2022 ')}<br><br>
+    <b>Good guesses:</b> ${m.guessPresets.join(' \u2022 ')}<br><br>
+    <b>What actually happened:</b> ${m.watch.join(' \u2022 ')}<br><br>
+    <b>Sentence:</b> ${m.sentenceTemplate.replace('___', m.correctWord)}<br><br>
+    <b>Answer:</b> ${labelText}<br><br>
+    ${m.feedback}
+  </div>`;
+}
+
+function checkFadingWork(){
+  examState.checked = true;
+  renderExamArea();
+}
+function finishFading(){
+  const ms = getM(currentMissionId);
+  ms.fadingDone = true;
+  saveState();
+  goHome();
+}
+
+function renderColdStartArea(m){
+  const wrap = document.getElementById('examArea');
+  const wp = WORDPROBLEMS.find(w=>w.id===ZOOM_LINKS[m.id]);
+  const lines = wp ? wp.lines : ['Look at the diagram above.','Think about what changed.'];
+  const question = wp ? wp.question : 'Is it a physical change or a chemical change? Explain your thinking.';
+
+  wrap.innerHTML = `
+    <div class="zoomline">${lines[0]}</div>
+    <div class="zoomline">${lines[1]}</div>
+    <div class="examq" style="margin-top:10px;">${question}</div>
+    <button class="timerbtn ${examState.timerRunning?'running':''}" id="timerBtn" onclick="toggleExamTimer()">${examState.timerRunning ? '\u23f1 '+formatTimer(examState.timerSeconds)+' \u2014 Stop' : '\u23f1 Start timer (optional)'}</button>
+    <div class="examcanvaswrap"><canvas id="canvas-coldstart" class="examcanvas"></canvas></div>
+    <div class="sketchtools" id="tools-coldstart"></div>
+    <button class="homebtn" onclick="checkColdStart()">✅ Check My Answer</button>
+    <div id="examRevealArea"></div>
+  `;
+  setupCanvasRig('coldstart');
+  if(examState.checked){
+    document.getElementById('examRevealArea').innerHTML = `<div class="examreveal">${wp ? wp.explain : m.feedback}</div>`;
+  }
+}
+
+function formatTimer(s){
+  const mm = Math.floor(s/60), ss = s%60;
+  return (mm<10?'0':'')+mm+':'+(ss<10?'0':'')+ss;
+}
+function toggleExamTimer(){
+  if(examState.timerRunning){
+    stopExamTimer();
+  } else {
+    examState.timerRunning = true;
+    examState.timerInterval = setInterval(()=>{
+      examState.timerSeconds++;
+      const btn = document.getElementById('timerBtn');
+      if(btn){ btn.textContent = '\u23f1 '+formatTimer(examState.timerSeconds)+' \u2014 Stop'; btn.classList.add('running'); }
+    }, 1000);
+  }
+  renderColdStartArea(MISSIONS.find(x=>x.id===currentMissionId));
+}
+function stopExamTimer(){
+  if(examState && examState.timerInterval){ clearInterval(examState.timerInterval); examState.timerInterval=null; }
+  if(examState) examState.timerRunning = false;
+}
+function checkColdStart(){
+  examState.checked = true;
+  const ms = getM(currentMissionId);
+  ms.coldstartDone = true;
+  saveState();
+  renderColdStartArea(MISSIONS.find(x=>x.id===currentMissionId));
+}
+
 function goHome(){
   document.getElementById('homeview').style.display='block';
   document.getElementById('missionview').classList.remove('active');
   document.getElementById('cookbookview').classList.remove('active');
+  document.getElementById('examview').classList.remove('active');
+  stopExamTimer();
   currentMissionId=null;
   renderHome();
 }
@@ -783,6 +1369,8 @@ function openMission(id){
   document.getElementById('mTitle').textContent = m.emoji+' '+m.title;
   document.getElementById('mStory').textContent = m.story;
   document.getElementById('mDiagram').innerHTML = m.diagram;
+  zoomState = { open:false, picked:null };
+  renderZoomArea();
   renderStep();
 }
 
@@ -795,6 +1383,80 @@ function renderDots(){
     d.className='dot' + (i<ms.step?' pastdone':'') + (i===ms.step?' on':'');
     wrap.appendChild(d);
   }
+}
+
+/* ============ ZOOM IN (Phase 5.3) ============
+   Optional, per-mission, never blocks the Next button.
+   Not saved to localStorage on purpose \u2014 it's a quick bonus look, not a tracked step.
+================================================== */
+let zoomState = { open:false, picked:null };
+
+function generateParticleSVG(type){
+  const isChem = type === 'chemical';
+  const c1 = '#5B93B0', c2 = '#D9724B';
+  const before = [[40,30],[70,25],[55,55],[90,50],[40,75],[75,80]]
+    .map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="9" fill="${c1}"/>`).join('');
+  let after;
+  if(isChem){
+    after = `<circle cx="210" cy="35" r="9" fill="${c1}"/><circle cx="226" cy="35" r="9" fill="${c2}"/>
+      <circle cx="210" cy="60" r="9" fill="${c1}"/><circle cx="226" cy="60" r="9" fill="${c2}"/>
+      <circle cx="210" cy="85" r="9" fill="${c1}"/><circle cx="226" cy="85" r="9" fill="${c2}"/>`;
+  } else {
+    after = [[195,30],[245,28],[220,55],[190,70],[250,72],[220,90]]
+      .map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="9" fill="${c1}"/>`).join('');
+  }
+  const caption = isChem ? 'Bits joined into something new' : 'Same tiny bits, just rearranged';
+  return `<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+    ${before}
+    <path d="M120 55 L165 55" stroke="#C9821F" stroke-width="3" marker-end="url(#zarrow)"/>
+    <defs><marker id="zarrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+    ${after}
+    <text x="150" y="105" text-anchor="middle" font-size="10" fill="#6B6459">${caption}</text>
+  </svg>`;
+}
+
+function renderZoomArea(){
+  const wrap = document.getElementById('zoomArea');
+  const wpId = ZOOM_LINKS[currentMissionId];
+  if(!wpId){ wrap.innerHTML=''; return; }
+  const wp = WORDPROBLEMS.find(w=>w.id===wpId);
+
+  if(!zoomState.open){
+    wrap.innerHTML = `<button class="zoombtn" onclick="toggleZoom()">\ud83d\udd2c Zoom In \u2014 see the tiny bits</button>`;
+    return;
+  }
+
+  let picksHtml = `<div class="zoomchoices">
+      <div class="zoomchoice ${zoomState.picked==='physical'?(wp.answerKey==='physical'?'right':'wrong'):''}" onclick="pickZoomAnswer('physical')">Physical</div>
+      <div class="zoomchoice ${zoomState.picked==='chemical'?(wp.answerKey==='chemical'?'right':'wrong'):''}" onclick="pickZoomAnswer('chemical')">Chemical</div>
+    </div>`;
+
+  let explainHtml = '';
+  if(zoomState.picked){
+    explainHtml = `<div class="zoomexplain"><b>${zoomState.picked===wp.answerKey?'Yes!':'Close \u2014 here\u2019s the trick:'}</b> ${wp.explain}</div>`;
+  }
+
+  wrap.innerHTML = `<div class="zoompanel">
+      <div class="zoomkicker">\ud83d\udd2c ZOOM IN \u2014 TRY THIS ONE</div>
+      <div class="zoom-diagram-box">${generateParticleSVG(wp.answerKey)}</div>
+      <div class="zoomline">${wp.lines[0]}</div>
+      <div class="zoomline">${wp.lines[1]}</div>
+      <div class="zoomq">${wp.question}</div>
+      ${picksHtml}
+      ${explainHtml}
+      <button class="zoomclose" onclick="toggleZoom()">Close</button>
+    </div>`;
+}
+
+function toggleZoom(){
+  zoomState.open = !zoomState.open;
+  if(zoomState.open) zoomState.picked = null;
+  renderZoomArea();
+}
+
+function pickZoomAnswer(key){
+  zoomState.picked = key;
+  renderZoomArea();
 }
 
 function renderStep(){
@@ -951,7 +1613,8 @@ function prevStep(){
 
 /* ============ SKETCH ENGINE ============ */
 const SKETCH_COLORS = ['#2E2A24','#C4472B','#3E6680','#6B8F71','#E8A33D'];
-const sketchRigs = {}; // key: 'before'/'after' -> {canvas, ctx, undoStack, color}
+const sketchRigs = {}; // key: 'before'/'after'/'coldstart' -> {canvas, ctx, undoStack, color}
+const SKETCH_FIELD_MAP = { before:'sketchBefore', after:'sketchAfter', coldstart:'coldstartSketch' };
 
 function initSketchStep(){
   ['before','after'].forEach(key=>{
@@ -965,7 +1628,7 @@ function setupCanvasRig(key){
   const rect = canvas.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
   const cssW = rect.width || 280;
-  const cssH = 170;
+  const cssH = rect.height || 170;
   canvas.width = cssW * dpr;
   canvas.height = cssH * dpr;
   const ctx = canvas.getContext('2d');
@@ -978,7 +1641,7 @@ function setupCanvasRig(key){
   sketchRigs[key] = rig;
 
   // restore saved drawing, if any
-  const saved = key==='before' ? ms.sketchBefore : ms.sketchAfter;
+  const saved = ms[SKETCH_FIELD_MAP[key]];
   if(saved){
     const img = new Image();
     img.onload = ()=>{ ctx.drawImage(img, 0, 0, cssW, cssH); };
@@ -1073,7 +1736,7 @@ function persistCanvas(key){
   const rig = sketchRigs[key];
   const ms = getM(currentMissionId);
   const dataUrl = rig.canvas.toDataURL('image/png');
-  if(key==='before') ms.sketchBefore = dataUrl; else ms.sketchAfter = dataUrl;
+  ms[SKETCH_FIELD_MAP[key]] = dataUrl;
   saveState();
 }
 
