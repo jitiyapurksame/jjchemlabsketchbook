@@ -113,6 +113,13 @@
   .trafficdot{width:11px;height:11px;border-radius:50%;}
   .trafficdot.green{background:var(--sage);}
   .trafficdot.yellow{background:var(--gold);}
+  .rcard.locked{opacity:0.45;cursor:default;}
+  .rcard.locked:active{transform:none;}
+  .tierpill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;white-space:nowrap;
+    background:rgba(127,119,221,0.16);color:#B7AEF0;margin-left:6px;}
+  .lockedmsg{font-size:11px;color:var(--text-muted);font-style:italic;}
+  .y9divider{margin:14px 0 4px;padding-top:10px;border-top:1px dashed var(--navy-border);
+    font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px;}
 
   .cookbookbtn{width:100%;background:var(--navy-card);border:1.5px solid var(--gold-dark);color:var(--gold);
     border-radius:14px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:18px;}
@@ -963,6 +970,484 @@ const MISSIONS = [
     labelB:{text:'Chemical change (new substance, cannot undo)', key:'chemical'},
     correctLabel:'physical',
     feedback:'This is a physical change! Blood vessels near the surface of the skin widen, letting more blood show through and making cheeks look pink \u2014 then narrow back down once you\u2019ve calmed down. It\u2019s the same skin and the same blood the whole time, nothing new is created.'
+  },
+
+  /* ============ YEAR 9 DEPTH LAYER (Phase 6.1) ============
+     Same 5 zones, deeper question. Unlocks per-zone only after
+     all Year 8 missions in that zone are done (see zoneY8Done()).
+     tier:'y9' is the only new field \u2014 everything else (XP, Cookbook,
+     Anki export, Zoom In, Cold Start) reads MISSIONS generically already.
+  ================================================== */
+  {
+    id:'lemonsoda', zone:'kitchen', tier:'y9', emoji:'\ud83c\udf4b', title:'Lemon Juice vs Baking Soda',
+    story:"You taste a drop of lemon juice \u2014 it's sharp and sour. You taste a pinch of baking soda mix \u2014 it's bitter and chalky. Mix them and they fizz like crazy.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="20" width="240" height="24" rx="12" fill="#EFE6D3" stroke="#B8AF95" stroke-width="1"/>
+      <rect x="30" y="20" width="60" height="24" rx="12" fill="#E8A33D"/>
+      <rect x="210" y="20" width="60" height="24" rx="12" fill="#7FA3C9"/>
+      <text x="60" y="55" text-anchor="middle" font-size="10" fill="#6B6459">0 acid</text>
+      <text x="150" y="55" text-anchor="middle" font-size="10" fill="#6B6459">7 neutral</text>
+      <text x="240" y="55" text-anchor="middle" font-size="10" fill="#6B6459">14 alkali</text>
+      <circle cx="55" cy="32" r="5" fill="#4A4038"/>
+      <text x="55" y="80" text-anchor="middle" font-size="11" fill="#6B6459">Lemon juice</text>
+      <circle cx="245" cy="32" r="5" fill="#4A4038"/>
+      <text x="245" y="80" text-anchor="middle" font-size="11" fill="#6B6459">Baking soda mix</text>
+      <text x="150" y="105" text-anchor="middle" font-size="10" fill="#C9821F">pH scale (0\u201314)</text>
+    </svg>`,
+    notice:['Lemon juice tastes sharp/sour','Baking soda mix tastes bitter','Mixing them fizzes','Fizzing makes gas bubbles'],
+    guessPresets:['Sour things and bitter things are both just \u201cacid\u201d','Sour and bitter are opposite ends of a pH scale'],
+    watch:['Lemon juice sits low on the pH scale','Baking soda mix sits high on the pH scale','Mixing them made gas','The fizzing settled down after a while'],
+    sentenceTemplate:'On the pH scale, sour things like lemon juice are ___, and pH 7 is neutral like pure water.',
+    wordbank:['acids (low pH)','alkalis (high pH)','always pH 7','neither acid nor alkali'],
+    correctWord:'acids (low pH)',
+    labelA:{text:'Acid (low pH, sour)', key:'acid'},
+    labelB:{text:'Alkali (high pH, bitter)', key:'alkali'},
+    correctLabel:'acid',
+    feedback:'Lemon juice is an acid \u2014 it sits low on the pH scale, well below 7. Baking soda mix is an alkali, sitting above 7. When an acid meets an alkali they react and fizz, releasing carbon dioxide gas.'
+  },
+  {
+    id:'warmtea', zone:'kitchen', tier:'y9', emoji:'\ud83c\udf75', title:'Why Warm Tea Dissolves Sugar Faster',
+    story:"You stir a spoon of sugar into iced tea \u2014 it takes ages to disappear. You stir the same spoon into hot tea \u2014 it vanishes almost instantly.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="40" width="80" height="60" rx="6" fill="#DDE6EA" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="55" cy="55" r="2" fill="#B8AF95"/><circle cx="70" cy="60" r="2" fill="#B8AF95"/>
+      <text x="70" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Cold tea: slow</text>
+      <rect x="190" y="40" width="80" height="60" rx="6" fill="#F5D9B0" stroke="#C9821F" stroke-width="2"/>
+      <circle cx="215" cy="55" r="2" fill="#B8AF95"/><circle cx="230" cy="70" r="2" fill="#B8AF95"/>
+      <circle cx="245" cy="50" r="2" fill="#B8AF95"/><circle cx="255" cy="80" r="2" fill="#B8AF95"/>
+      <text x="230" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Hot tea: fast</text>
+    </svg>`,
+    notice:['Sugar dissolves slower in cold tea','Sugar dissolves faster in hot tea','Hot tea particles move more','Both end up fully dissolved eventually'],
+    guessPresets:['Temperature makes no real difference to dissolving speed','Warmer particles move faster, so they mix and dissolve quicker'],
+    watch:['Cold tea took much longer to clear','Hot tea cleared almost instantly','Stirring helped both, but heat helped more','No new substance was formed either time'],
+    sentenceTemplate:'Heating a liquid gives its particles more energy, so they move ___ and collide with the sugar more often.',
+    wordbank:['faster','slower','not at all','in exactly the same way'],
+    correctWord:'faster',
+    labelA:{text:'Faster dissolving (more particle energy)', key:'faster'},
+    labelB:{text:'Slower dissolving (less particle energy)', key:'slower'},
+    correctLabel:'faster',
+    feedback:'Heat gives particles more energy, so they move and collide faster \u2014 that speeds up dissolving. This is the same reaction-rate idea chemists use everywhere: more heat almost always means more speed.'
+  },
+  {
+    id:'rivetmetal', zone:'titanic', tier:'y9', emoji:'\ud83d\udd29', title:"What's This Rivet Actually Made Of?",
+    story:"A shipbuilder hands you a rivet and says: \u201cThis one's just iron. That bracket over there is steel \u2014 iron mixed with a bit of carbon.\u201d You wonder what the real difference is.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="80" cy="60" r="45" fill="#DDE6EA" stroke="#3E6680" stroke-width="1"/>
+      <circle cx="65" cy="50" r="6" fill="#7A7266"/><circle cx="95" cy="50" r="6" fill="#7A7266"/>
+      <circle cx="80" cy="70" r="6" fill="#7A7266"/><circle cx="65" cy="75" r="6" fill="#7A7266"/>
+      <text x="80" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Iron: one atom type</text>
+      <circle cx="220" cy="60" r="45" fill="#DDE6EA" stroke="#3E6680" stroke-width="1"/>
+      <circle cx="205" cy="50" r="6" fill="#7A7266"/><circle cx="235" cy="50" r="6" fill="#7A7266"/>
+      <circle cx="220" cy="70" r="6" fill="#7A7266"/><circle cx="205" cy="75" r="6" fill="#7A7266"/>
+      <circle cx="222" cy="63" r="3" fill="#2C2C2A"/>
+      <text x="220" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Steel: iron + carbon</text>
+    </svg>`,
+    notice:['Rivet is described as \u201cjust iron\u201d','Bracket is iron plus carbon','Both look like solid grey metal','One is called an element, one a mix'],
+    guessPresets:['They must be totally different substances with nothing in common','One is a single element, the other has a different atom mixed in'],
+    watch:['Iron rivet: only iron atoms','Steel bracket: iron atoms plus carbon atoms','Adding carbon changes the metal\u2019s properties','Both still look similar to the eye'],
+    sentenceTemplate:'Iron on its own is an element \u2014 one type of atom. Steel has iron and carbon atoms bonded together, which makes it a ___.',
+    wordbank:['compound','pure element','gas','solution'],
+    correctWord:'compound',
+    labelA:{text:'Element (one type of atom)', key:'element'},
+    labelB:{text:'Compound (atoms joined together)', key:'compound'},
+    correctLabel:'element',
+    feedback:'Plain iron is an element \u2014 every atom in it is the same type. Steel is different: it\u2019s iron atoms with a small amount of carbon mixed through the structure, which is why chemists would classify it differently from pure iron.'
+  },
+  {
+    id:'coalequation', zone:'titanic', tier:'y9', emoji:'\u2696\ufe0f', title:'Balancing the Coal Furnace Equation',
+    story:"Coal burns in the furnace. Nothing seems to vanish or appear from nowhere \u2014 the stoker knows every atom that goes in has to come out somewhere, just rearranged.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="45" width="100" height="34" rx="6" fill="#4A4038"/>
+      <text x="70" y="66" text-anchor="middle" font-size="11" fill="#F3E4B8">Coal + oxygen</text>
+      <path d="M130 62 L170 62" stroke="#C9821F" stroke-width="3" marker-end="url(#arrowY9a)"/>
+      <defs><marker id="arrowY9a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <rect x="180" y="45" width="100" height="34" rx="6" fill="#6B6459"/>
+      <text x="230" y="66" text-anchor="middle" font-size="11" fill="#F3E4B8">Carbon dioxide + ash</text>
+      <text x="150" y="100" text-anchor="middle" font-size="10" fill="#6B6459">Same total mass, both sides</text>
+    </svg>`,
+    notice:['Coal and oxygen go in','Carbon dioxide and ash come out','Nothing just disappears','The total mass balances out'],
+    guessPresets:['Burning destroys some of the mass completely','Every atom going in is still there, just rearranged into new substances'],
+    watch:['Reactants: coal + oxygen','Products: carbon dioxide + ash','Total mass of products equals total mass of reactants','This matches every reaction, not just burning'],
+    sentenceTemplate:'Coal + oxygen ___ carbon dioxide + ash. No atoms are lost, they\u2019re just rearranged.',
+    wordbank:['\u2192 (produces)','+ (also produces)','\u2260 (never equals)','\u00d7 (cancels out)'],
+    correctWord:'\u2192 (produces)',
+    labelA:{text:'Mass is created during burning', key:'created'},
+    labelB:{text:'Mass is conserved (same total, rearranged)', key:'conserved'},
+    correctLabel:'conserved',
+    feedback:'Mass is conserved \u2014 every atom in the coal and oxygen ends up somewhere in the carbon dioxide and ash. Nothing is created or destroyed, just rearranged into new substances. This is the Law of Conservation of Mass, and it\u2019s true for every reaction.'
+  },
+  {
+    id:'pixelblocks', zone:'pixel', tier:'y9', emoji:'\ud83e\uddf1', title:'Building Blocks of the Mushroom Kingdom',
+    story:"A glowing coin block is made of one shiny material all the way through. A fizzing potion block is clearly two things joined together \u2014 it hisses and bubbles the moment it cracks open.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="30" width="70" height="70" rx="8" fill="#F2C879" stroke="#C9821F" stroke-width="2"/>
+      <circle cx="55" cy="55" r="5" fill="#C9821F"/><circle cx="75" cy="55" r="5" fill="#C9821F"/>
+      <circle cx="55" cy="75" r="5" fill="#C9821F"/><circle cx="75" cy="75" r="5" fill="#C9821F"/>
+      <text x="65" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Coin block: 1 material</text>
+      <rect x="190" y="30" width="70" height="70" rx="8" fill="#9FC98A" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="212" cy="52" r="5" fill="#3E6680"/><circle cx="232" cy="52" r="4" fill="#E8899B"/>
+      <circle cx="212" cy="78" r="4" fill="#E8899B"/><circle cx="232" cy="78" r="5" fill="#3E6680"/>
+      <text x="225" y="112" text-anchor="middle" font-size="11" fill="#6B6459">Potion block: 2 joined</text>
+    </svg>`,
+    notice:['Coin block looks the same material all through','Potion block fizzes when cracked','Fizzing means two things reacting','Coin block never fizzes or changes'],
+    guessPresets:['Every block in the game must be made the exact same way','Some blocks are one pure material, others are joined-together substances'],
+    watch:['Coin block: one repeating unit, no reaction','Potion block: two different units bonded together','Only the potion block released gas','Coin block stayed completely unreactive'],
+    sentenceTemplate:'A block made of just one type of atom, repeated, is like an element. A block made of two atom types joined together is like a ___.',
+    wordbank:['compound','mixture','solution','suspension'],
+    correctWord:'compound',
+    labelA:{text:'Element (one type of atom)', key:'element'},
+    labelB:{text:'Compound (atoms joined together)', key:'compound'},
+    correctLabel:'element',
+    feedback:'The coin block behaves like an element \u2014 one repeating type of building block with no reaction happening. The potion block behaves like a compound: two different parts chemically joined, which is exactly why it can fizz and react when it cracks open.'
+  },
+  {
+    id:'potionequation', zone:'pixel', tier:'y9', emoji:'\ud83e\uddea', title:'What Went Into the Fizzing Potion Block',
+    story:"The fizzing potion block pops open. Bubbles rush out and the block shrinks a little \u2014 but a curious player insists nothing is actually being lost, just changed into gas.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="40" width="110" height="40" rx="6" fill="#9FC98A" stroke="#3E6680" stroke-width="2"/>
+      <text x="75" y="64" text-anchor="middle" font-size="11" fill="#2C2C2A">Potion mix</text>
+      <path d="M140 60 L175 60" stroke="#C9821F" stroke-width="3" marker-end="url(#arrowY9b)"/>
+      <defs><marker id="arrowY9b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <rect x="185" y="40" width="95" height="40" rx="6" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="205" cy="48" r="2" fill="#B8AF95"/><circle cx="220" cy="55" r="2" fill="#B8AF95"/>
+      <circle cx="240" cy="45" r="2" fill="#B8AF95"/>
+      <text x="232" y="70" text-anchor="middle" font-size="11" fill="#2C2C2A">Gas + residue</text>
+      <text x="150" y="102" text-anchor="middle" font-size="10" fill="#6B6459">Same total mass, both sides</text>
+    </svg>`,
+    notice:['Block shrinks a little','Gas rushes out','Some residue is left behind','Nothing vanishes without a trace'],
+    guessPresets:['Some of the potion\u2019s mass just disappears completely','All the missing mass left as the escaping gas'],
+    watch:['Potion mix (reactant) shrank','Gas + residue (products) appeared','Gas mass + residue mass = original mass','This works the same for every reaction'],
+    sentenceTemplate:'The potion mix didn\u2019t lose mass \u2014 it turned into gas and residue that together weigh the ___ as the start.',
+    wordbank:['same','more','less','random'],
+    correctWord:'same',
+    labelA:{text:'Mass is created when it fizzes', key:'created'},
+    labelB:{text:'Mass is conserved (same total, rearranged)', key:'conserved'},
+    correctLabel:'conserved',
+    feedback:'Mass is conserved. If you could weigh the escaping gas along with what\u2019s left behind, it would match the potion mix\u2019s starting mass exactly. It only looks like something vanished because the gas floats away where you can\u2019t weigh it.'
+  },
+  {
+    id:'coldreaction', zone:'icekingdom', tier:'y9', emoji:'\ud83e\udd76', title:'Does Cold Slow the Reaction Down?',
+    story:"A fizzing potion reacts almost instantly at room temperature. Left out in the Ice Kingdom's freezing air, the exact same potion barely fizzes at all \u2014 it takes ages.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="30" width="80" height="60" rx="6" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="55" cy="50" r="2" fill="#B8AF95"/><circle cx="65" cy="65" r="2" fill="#B8AF95"/>
+      <text x="70" y="105" text-anchor="middle" font-size="11" fill="#6B6459">Cold: slow fizz</text>
+      <rect x="190" y="30" width="80" height="60" rx="6" fill="#F5D9B0" stroke="#C9821F" stroke-width="2"/>
+      <circle cx="210" cy="45" r="2" fill="#B8AF95"/><circle cx="230" cy="55" r="2" fill="#B8AF95"/>
+      <circle cx="245" cy="40" r="2" fill="#B8AF95"/><circle cx="215" cy="70" r="2" fill="#B8AF95"/>
+      <circle cx="250" cy="75" r="2" fill="#B8AF95"/>
+      <text x="230" y="105" text-anchor="middle" font-size="11" fill="#6B6459">Warm: fast fizz</text>
+    </svg>`,
+    notice:['Cold potion barely fizzes','Warm potion fizzes fast','Same potion, different temperature','Particles move less in the cold'],
+    guessPresets:['Temperature has no effect on how fast a reaction happens','Colder particles move slower, so the reaction slows right down'],
+    watch:['Cold sample: slow, weak fizzing','Warm sample: fast, strong fizzing','Both eventually finished reacting','Only the speed changed, not the outcome'],
+    sentenceTemplate:'Cold particles have less energy and move ___, so they collide and react less often.',
+    wordbank:['slower','faster','the same speed','backwards'],
+    correctWord:'slower',
+    labelA:{text:'Faster reaction (more particle energy)', key:'faster'},
+    labelB:{text:'Slower reaction (less particle energy)', key:'slower'},
+    correctLabel:'slower',
+    feedback:'Cold slows reactions down. Particles have less energy, so they move slower and collide less often \u2014 fewer collisions means a slower reaction. This is the exact same idea as the warm tea dissolving sugar faster, just in reverse.'
+  },
+  {
+    id:'saltpurewater', zone:'icekingdom', tier:'y9', emoji:'\ud83e\udea3', title:'Salt Water vs Pure Water \u2014 One Substance or Two?',
+    story:"You freeze a tray of pure water and a tray of salty fountain water side by side. The pure water freezes solid at 0\u00b0C. The salty water needs to get much colder before it freezes at all.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 30 L40 95 Q40 105 50 105 L90 105 Q100 105 100 95 L100 30" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <text x="70" y="115" text-anchor="middle" font-size="11" fill="#6B6459">Pure water</text>
+      <path d="M200 30 L200 95 Q200 105 210 105 L250 105 Q260 105 260 95 L260 30" fill="#DDE6EA" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="215" cy="55" r="2" fill="#B8AF95"/><circle cx="230" cy="70" r="2" fill="#B8AF95"/>
+      <circle cx="245" cy="50" r="2" fill="#B8AF95"/><circle cx="225" cy="85" r="2" fill="#B8AF95"/>
+      <text x="230" y="115" text-anchor="middle" font-size="11" fill="#6B6459">Salt water</text>
+    </svg>`,
+    notice:['Pure water freezes at 0\u00b0C','Salt water needs colder to freeze','Salt water still looks like one liquid','Salt didn\u2019t disappear, it\u2019s dissolved throughout'],
+    guessPresets:['Salt water is just water with a different freezing point built in','Salt water is a mixture, so its freezing point can change'],
+    watch:['Pure water: one substance, fixed freezing point','Salt water: two substances mixed, freezing point changes','Salt can be separated back out by evaporating the water','This proves salt water is a mixture, not one pure substance'],
+    sentenceTemplate:'Because salt water can be separated back into salt and water, it must be a ___, not one pure substance.',
+    wordbank:['mixture','compound','element','new chemical'],
+    correctWord:'mixture',
+    labelA:{text:'Mixture (two substances)', key:'mixture'},
+    labelB:{text:'Pure substance (one substance)', key:'pure'},
+    correctLabel:'mixture',
+    feedback:'Salt water is a mixture \u2014 two substances (salt and water) simply mixed, not chemically joined. That\u2019s exactly why its freezing point shifts and why you can separate the salt back out again, which you can never do with a truly pure substance.'
+  },
+  {
+    id:'stomachph', zone:'mindlab', tier:'y9', emoji:'\ud83e\udea8', title:'Stomach Acid pH Detective',
+    story:"A nurse explains that your stomach is filled with a strong acid that helps break down food \u2014 far more acidic than lemon juice, sitting near the very bottom of the pH scale.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="20" width="240" height="24" rx="12" fill="#EFE6D3" stroke="#B8AF95" stroke-width="1"/>
+      <rect x="30" y="20" width="45" height="24" rx="12" fill="#D85A30"/>
+      <text x="52" y="55" text-anchor="middle" font-size="10" fill="#6B6459">1\u20132</text>
+      <text x="52" y="80" text-anchor="middle" font-size="11" fill="#6B6459">Stomach acid</text>
+      <text x="150" y="55" text-anchor="middle" font-size="10" fill="#6B6459">7 neutral</text>
+      <circle cx="52" cy="32" r="5" fill="#4A4038"/>
+      <text x="150" y="105" text-anchor="middle" font-size="10" fill="#C9821F">pH scale (0\u201314)</text>
+    </svg>`,
+    notice:['Stomach acid is described as very strong','It sits near pH 1\u20132','Lemon juice is around pH 2\u20133, less strong','Both are far below neutral pH 7'],
+    guessPresets:['All acids are roughly the same strength','Acids can be weak or very strong, at different points on the pH scale'],
+    watch:['Stomach acid: pH around 1\u20132','Lemon juice: pH around 2\u20133','Both are acids, but stomach acid is stronger','Neutral water sits at pH 7, far above both'],
+    sentenceTemplate:'The lower the pH number, the ___ the acid \u2014 stomach acid is stronger than lemon juice.',
+    wordbank:['stronger','weaker','more neutral','more alkaline'],
+    correctWord:'stronger',
+    labelA:{text:'Acid (low pH)', key:'acid'},
+    labelB:{text:'Alkali (high pH)', key:'alkali'},
+    correctLabel:'acid',
+    feedback:'Stomach acid is a strong acid, sitting near pH 1\u20132 \u2014 well below neutral pH 7 and even more acidic than lemon juice. That strength is exactly what lets it help break down food.'
+  },
+  {
+    id:'digestequation', zone:'mindlab', tier:'y9', emoji:'\ud83c\udf7d\ufe0f', title:'Digestion Equation \u2014 In and Out',
+    story:"A meal goes into your stomach as big lumps of food. Hours later, none of it looks the same \u2014 but a scientist reminds you that every atom from that meal is still accounted for, just rearranged.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="45" width="100" height="34" rx="6" fill="#E8CB93"/>
+      <text x="70" y="66" text-anchor="middle" font-size="11" fill="#4A2C18">Food + acid</text>
+      <path d="M130 62 L170 62" stroke="#C9821F" stroke-width="3" marker-end="url(#arrowY9c)"/>
+      <defs><marker id="arrowY9c" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9821F"/></marker></defs>
+      <rect x="180" y="45" width="100" height="34" rx="6" fill="#D9A94A"/>
+      <text x="230" y="66" text-anchor="middle" font-size="11" fill="#4A2C18">Nutrients + waste</text>
+      <text x="150" y="100" text-anchor="middle" font-size="10" fill="#6B6459">Same total mass, both sides</text>
+    </svg>`,
+    notice:['Food + stomach acid go in','Nutrients + waste come out','Nothing from the meal just vanishes','It\u2019s all rearranged, not destroyed'],
+    guessPresets:['Some of the food\u2019s mass just disappears during digestion','All the atoms end up somewhere \u2014 nutrients, waste, or gases'],
+    watch:['Reactants: food + digestive acid','Products: absorbed nutrients + waste','Total mass in equals total mass out','This is the same rule as burning coal or fizzing potions'],
+    sentenceTemplate:'Food + digestive acid ___ nutrients + waste. No atoms are lost, they\u2019re just rearranged.',
+    wordbank:['\u2192 (produces)','+ (also produces)','\u2260 (never equals)','\u00d7 (cancels out)'],
+    correctWord:'\u2192 (produces)',
+    labelA:{text:'Mass is created during digestion', key:'created'},
+    labelB:{text:'Mass is conserved (same total, rearranged)', key:'conserved'},
+    correctLabel:'conserved',
+    feedback:'Mass is conserved during digestion, just like burning or fizzing. Every atom from the meal ends up somewhere \u2014 absorbed as nutrients or leaving as waste \u2014 the total never actually disappears, it only changes form.'
+  },
+
+  /* ============ YEAR 9 DEPTH LAYER, BATCH 2 (Phase 6.2) ============
+     Atomic structure, periodic table, bonding, separation methods,
+     data interpretation. Same tier:'y9' field, same unlock rule.
+  ================================================== */
+  {
+    id:'filtersand', zone:'kitchen', tier:'y9', emoji:'\ud83e\uddc2', title:'Filter Out the Sand',
+    story:"A jug of water has sand stirred into it. Your friend says \u201cjust boil it away like salt water.\u201d But the sand never dissolved in the first place \u2014 so there's a faster way.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M110 20 L150 20 L170 70 L90 70 Z" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="120" cy="35" r="2" fill="#B8895A"/><circle cx="135" cy="40" r="2" fill="#B8895A"/>
+      <circle cx="128" cy="50" r="2" fill="#B8895A"/>
+      <text x="130" y="90" text-anchor="middle" font-size="11" fill="#6B6459">Paper filter</text>
+      <rect x="105" y="90" width="50" height="20" fill="#EAF3F8" stroke="#3E6680" stroke-width="1"/>
+      <text x="130" y="112" text-anchor="middle" font-size="10" fill="#6B6459">Clear water through</text>
+      <circle cx="200" cy="70" r="2" fill="#B8895A"/><circle cx="210" cy="72" r="2" fill="#B8895A"/>
+      <text x="230" y="90" text-anchor="middle" font-size="10" fill="#6B6459">Sand stays on top</text>
+    </svg>`,
+    notice:['Sand never dissolved, it just sits in the water','Sand is heavier than water','A paper filter has tiny holes','Water passes through, solid bits can\u2019t'],
+    guessPresets:['Filtering only works on things that have dissolved','Filtering works on solids that never dissolved in the first place'],
+    watch:['Sand was caught on the filter paper','Water that passed through was clear','No boiling or evaporating was needed','This would not work on dissolved salt'],
+    sentenceTemplate:'Filtration only works when the solid hasn\u2019t ___ \u2014 it has to still be a separate solid, not mixed in at a particle level.',
+    wordbank:['dissolved','melted','frozen','boiled'],
+    correctWord:'dissolved',
+    labelA:{text:'Filtration (undissolved solid)', key:'filtration'},
+    labelB:{text:'Evaporation (dissolved substance)', key:'evaporation'},
+    correctLabel:'filtration',
+    feedback:'Filtration is the right method here because the sand never dissolved \u2014 it\u2019s still separate solid particles that are simply too big to pass through the filter paper. Evaporation is for a substance that has actually dissolved, like salt in water.'
+  },
+  {
+    id:'conductsalt', zone:'kitchen', tier:'y9', emoji:'\u26a1', title:'Salt Water Conducts, Sugar Water Doesn\u2019t',
+    story:"You dip two wires connected to a bulb into salt water \u2014 it lights up. You try the exact same test with sugar water \u2014 nothing happens at all.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 30 L40 95 Q40 105 50 105 L90 105 Q100 105 100 95 L100 30" fill="#DDE6EA" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="70" cy="20" r="10" fill="#E3B341"/>
+      <text x="70" y="115" text-anchor="middle" font-size="11" fill="#6B6459">Salt water: lights up</text>
+      <path d="M200 30 L200 95 Q200 105 210 105 L250 105 Q260 105 260 95 L260 30" fill="#DDE6EA" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="230" cy="20" r="10" fill="#6B6459"/>
+      <text x="230" y="115" text-anchor="middle" font-size="11" fill="#6B6459">Sugar water: nothing</text>
+    </svg>`,
+    notice:['Salt water lights the bulb up','Sugar water does nothing','Both look like clear liquids','Only one carries an electric current'],
+    guessPresets:['All dissolved substances should conduct electricity the same way','Only some dissolved substances form charged particles that can carry current'],
+    watch:['Salt water: bulb lit up','Sugar water: bulb stayed off','Salt splits into charged particles when it dissolves','Sugar dissolves but stays as whole, uncharged particles'],
+    sentenceTemplate:'Salt is an ionic compound \u2014 it splits into charged particles in water, which can carry a current. Sugar is a ___ compound, so it can\u2019t.',
+    wordbank:['covalent','metallic','magnetic','radioactive'],
+    correctWord:'covalent',
+    labelA:{text:'Ionic compound (conducts when dissolved)', key:'ionic'},
+    labelB:{text:'Covalent compound (doesn\u2019t conduct)', key:'covalent'},
+    correctLabel:'ionic',
+    feedback:'Salt is ionic \u2014 it\u2019s built from charged particles (ions) that separate and move freely once dissolved, carrying the current. Sugar is covalent \u2014 it dissolves as whole, uncharged molecules, so there\u2019s nothing to carry a current.'
+  },
+  {
+    id:'ironatom', zone:'titanic', tier:'y9', emoji:'\u269b\ufe0f', title:'What\u2019s Inside an Iron Atom?',
+    story:"An engineer sketches an iron atom on the workshop wall: a tiny, dense centre with a cloud of much lighter particles zooming around it. \u201cThe centre is where almost all the mass is,\u201d she says.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="60" r="50" fill="none" stroke="#7A7266" stroke-width="1" stroke-dasharray="3,3"/>
+      <circle cx="150" cy="60" r="14" fill="#4A4038"/>
+      <circle cx="145" cy="56" r="3" fill="#C9821F"/><circle cx="155" cy="63" r="3" fill="#3E6680"/>
+      <circle cx="150" cy="65" r="3" fill="#C9821F"/>
+      <circle cx="150" cy="10" r="3" fill="#5B93B0"/>
+      <circle cx="195" cy="85" r="3" fill="#5B93B0"/>
+      <circle cx="105" cy="85" r="3" fill="#5B93B0"/>
+      <text x="150" y="112" text-anchor="middle" font-size="10" fill="#6B6459">Nucleus (centre) + electrons (orbiting)</text>
+    </svg>`,
+    notice:['Centre looks tiny and dense','Small dots orbit around the outside','The centre holds almost all the mass','The orbiting particles are much lighter'],
+    guessPresets:['Protons and electrons are both found together in the centre','Protons and neutrons sit in the nucleus, electrons orbit around it'],
+    watch:['Nucleus: protons (positive) + neutrons (no charge)','Electrons (negative): orbit in shells around the nucleus','Nucleus is tiny but has almost all the atom\u2019s mass','Electrons are far lighter and much further out'],
+    sentenceTemplate:'Protons and neutrons are packed into the tiny, heavy ___ at the centre of the atom.',
+    wordbank:['nucleus','electron shell','outer ring','atom cloud'],
+    correctWord:'nucleus',
+    labelA:{text:'Protons/neutrons in the nucleus', key:'nucleus'},
+    labelB:{text:'Protons/neutrons in the outer shells', key:'shells'},
+    correctLabel:'nucleus',
+    feedback:'Protons and neutrons are packed into the nucleus \u2014 a tiny, dense centre that holds almost all of the atom\u2019s mass. Electrons are far lighter and orbit around the outside in shells, which is why the nucleus is where nearly all the \u201cstuff\u201d of an atom really is.'
+  },
+  {
+    id:'metaltable', zone:'titanic', tier:'y9', emoji:'\ud83d\udccb', title:'Where Do Ship Metals Sit on the Periodic Table?',
+    story:"Iron, copper and nickel all show up somewhere on the ship \u2014 rivets, pipes, fittings. A chart on the workshop wall shows they all cluster together on one side of the periodic table.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="20" width="180" height="80" rx="6" fill="#DDE6EA" stroke="#3E6680" stroke-width="1"/>
+      <text x="110" y="15" text-anchor="middle" font-size="10" fill="#6B6459">Metals (most of the table)</text>
+      <rect x="220" y="20" width="60" height="80" rx="6" fill="#F5D9B0" stroke="#C9821F" stroke-width="1"/>
+      <text x="250" y="15" text-anchor="middle" font-size="10" fill="#6B6459">Non-metals</text>
+      <circle cx="60" cy="55" r="8" fill="#7A7266"/><text x="60" y="80" text-anchor="middle" font-size="9" fill="#6B6459">Fe</text>
+      <circle cx="110" cy="55" r="8" fill="#C9821F"/><text x="110" y="80" text-anchor="middle" font-size="9" fill="#6B6459">Cu</text>
+      <circle cx="160" cy="55" r="8" fill="#B8AF95"/><text x="160" y="80" text-anchor="middle" font-size="9" fill="#6B6459">Ni</text>
+    </svg>`,
+    notice:['Iron, copper and nickel are all used on the ship','All three feel solid, shiny and can be shaped','They all sit on the same side of the periodic table','Non-metals are a much smaller group'],
+    guessPresets:['Metals and non-metals are randomly scattered around the table','Metals cluster together on one side, non-metals on the other'],
+    watch:['Iron, copper and nickel: all metals','All three sit on the left/middle of the table','Non-metals sit over on the right side','Most of the periodic table is actually metal'],
+    sentenceTemplate:'Iron, copper and nickel are grouped together because they\u2019re all ___, which sit on the same side of the periodic table.',
+    wordbank:['metals','gases','liquids','non-metals'],
+    correctWord:'metals',
+    labelA:{text:'Metal (left/middle of the table)', key:'metal'},
+    labelB:{text:'Non-metal (right side of the table)', key:'nonmetal'},
+    correctLabel:'metal',
+    feedback:'Iron, copper and nickel are all metals, which is exactly why they cluster together on the same side of the periodic table. Metals make up most of the table \u2014 non-metals are the smaller group over on the right.'
+  },
+  {
+    id:'pixelatombuild', zone:'pixel', tier:'y9', emoji:'\ud83c\udfae', title:'Building an Atom, Power-Up Style',
+    story:"A game guide explains character stats: \u201cThe heavy core pieces sit locked in the middle. The light, fast pieces zoom around the outside in rings.\u201d It sounds a lot like something else you\u2019ve studied.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="60" r="45" fill="none" stroke="#9FC98A" stroke-width="1" stroke-dasharray="3,3"/>
+      <rect x="138" y="48" width="24" height="24" rx="4" fill="#D9724B"/>
+      <circle cx="150" cy="20" r="4" fill="#5B93B0"/>
+      <circle cx="192" cy="80" r="4" fill="#5B93B0"/>
+      <circle cx="108" cy="80" r="4" fill="#5B93B0"/>
+      <text x="150" y="112" text-anchor="middle" font-size="10" fill="#6B6459">Core block = nucleus, rings = electrons</text>
+    </svg>`,
+    notice:['Heavy core sits locked in the middle','Light pieces move in rings around it','Core stays still, ring pieces move fast','Same pattern as a real atom'],
+    guessPresets:['Every part of a character is equally heavy and equally fast','The heavy core matches the nucleus, the fast rings match electrons'],
+    watch:['Core block: heavy, stays in the centre','Ring pieces: light, move around the outside','This mirrors protons/neutrons in the nucleus','And electrons orbiting in shells'],
+    sentenceTemplate:'The heavy core block that stays in the centre is like an atom\u2019s ___, holding the protons and neutrons.',
+    wordbank:['nucleus','electron ring','power meter','shell'],
+    correctWord:'nucleus',
+    labelA:{text:'Protons/neutrons in the nucleus', key:'nucleus'},
+    labelB:{text:'Protons/neutrons in the outer shells', key:'shells'},
+    correctLabel:'nucleus',
+    feedback:'The heavy core matches the atom\u2019s nucleus \u2014 where the protons and neutrons are locked together. The fast-moving ring pieces match the electrons, which are far lighter and orbit around the outside in shells.'
+  },
+  {
+    id:'sharesteal', zone:'pixel', tier:'y9', emoji:'\ud83e\udd1d', title:'Sharing vs Stealing: Bonding Basics',
+    story:"Two matching power blocks touch and fuse, each keeping a share of the glow. Somewhere else, one block zaps a spark clean off another block, leaving both charged and stuck together.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="80" cy="50" r="26" fill="#9FC98A"/>
+      <circle cx="120" cy="50" r="26" fill="#9FC98A"/>
+      <circle cx="100" cy="50" r="8" fill="#5B93B0"/>
+      <text x="100" y="95" text-anchor="middle" font-size="10" fill="#6B6459">Sharing (covalent)</text>
+      <circle cx="210" cy="50" r="20" fill="#D9724B"/>
+      <text x="210" y="35" text-anchor="middle" font-size="9" fill="#fff">+</text>
+      <circle cx="255" cy="50" r="26" fill="#3E6680"/>
+      <text x="255" y="35" text-anchor="middle" font-size="9" fill="#fff">\u2212</text>
+      <text x="232" y="95" text-anchor="middle" font-size="10" fill="#6B6459">Transferring (ionic)</text>
+    </svg>`,
+    notice:['Two matching blocks fuse and share a glow','One block steals a spark from another','Sharing leaves both blocks neutral','Stealing leaves both blocks charged'],
+    guessPresets:['Sharing and stealing electrons are exactly the same kind of bond','Sharing electrons is different from one atom fully taking an electron'],
+    watch:['Matching blocks: shared glow, both stay neutral','Zapping block: one loses charge, one gains it','Shared glow = covalent bonding','Transferred spark = ionic bonding'],
+    sentenceTemplate:'When two atoms share electrons instead of transferring them completely, chemists call that a ___ bond.',
+    wordbank:['covalent','ionic','metallic','magnetic'],
+    correctWord:'covalent',
+    labelA:{text:'Covalent (sharing electrons)', key:'covalent'},
+    labelB:{text:'Ionic (transferring electrons)', key:'ionic'},
+    correctLabel:'covalent',
+    feedback:'Two matching blocks fusing and sharing their glow is covalent bonding \u2014 electrons are shared between atoms. The zapping block is ionic bonding \u2014 one atom fully transfers an electron to another, leaving both charged.'
+  },
+  {
+    id:'distillfountain', zone:'icekingdom', tier:'y9', emoji:'\ud83e\uddea', title:'Distilling the Fountain',
+    story:"The palace fountain water is salty and undrinkable. A filter does nothing \u2014 the salt is fully dissolved. But boiling it and catching the steam in a cold container leaves pure water behind.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="60" width="60" height="35" rx="4" fill="#DDE6EA" stroke="#3E6680" stroke-width="2"/>
+      <text x="60" y="112" text-anchor="middle" font-size="10" fill="#6B6459">Salt water, heated</text>
+      <path d="M95 65 Q140 30 180 40" fill="none" stroke="#B8AF95" stroke-width="2" stroke-dasharray="3,3"/>
+      <text x="140" y="25" text-anchor="middle" font-size="10" fill="#6B6459">Steam rises</text>
+      <rect x="180" y="40" width="60" height="20" rx="4" fill="#7A7266"/>
+      <text x="210" y="35" text-anchor="middle" font-size="9" fill="#6B6459">Cold tube</text>
+      <rect x="200" y="65" width="50" height="30" rx="4" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <text x="225" y="112" text-anchor="middle" font-size="10" fill="#6B6459">Pure water collects</text>
+    </svg>`,
+    notice:['A filter does nothing to salt water','Boiling makes steam rise from the water','Cooling the steam turns it back to liquid','The salt is left behind, not in the steam'],
+    guessPresets:['Filtration should work fine on any mixture, dissolved or not','Distillation is needed when the substance has actually dissolved'],
+    watch:['Filter: no effect, salt stays dissolved','Boiling: steam rises, salt stays behind','Cooling the steam: pure water collects','Salt never leaves the original container'],
+    sentenceTemplate:'Because salt is dissolved, not just mixed in as solid bits, it needs ___ \u2014 boiling then cooling the steam \u2014 not filtration.',
+    wordbank:['distillation','freezing','filtration','magnetism'],
+    correctWord:'distillation',
+    labelA:{text:'Distillation (evaporate then condense)', key:'distillation'},
+    labelB:{text:'Filtration (catches undissolved solids)', key:'filtration'},
+    correctLabel:'distillation',
+    feedback:'Distillation is the right method \u2014 salt is fully dissolved, so a filter can\u2019t catch it. Boiling turns the water into steam, leaving the salt behind, then cooling the steam back into liquid collects pure water.'
+  },
+  {
+    id:'meltgraph', zone:'icekingdom', tier:'y9', emoji:'\ud83d\udcc8', title:'Reading the Ice Melting Graph',
+    story:"A thermometer tracks an ice block as it slowly warms up. The line on the graph climbs steadily\u2026 then goes completely flat for a while\u2026 then climbs again.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <line x1="30" y1="100" x2="270" y2="100" stroke="#B8AF95" stroke-width="1"/>
+      <line x1="30" y1="100" x2="30" y2="15" stroke="#B8AF95" stroke-width="1"/>
+      <path d="M30 90 L90 55 L190 55 L250 20" fill="none" stroke="#3E6680" stroke-width="2.5"/>
+      <text x="140" y="45" text-anchor="middle" font-size="10" fill="#C9821F">Flat \u2014 melting, temp not rising</text>
+      <text x="150" y="112" text-anchor="middle" font-size="10" fill="#6B6459">Time \u2192 (temperature on vertical axis)</text>
+    </svg>`,
+    notice:['Line climbs at first','Line goes flat for a stretch','Line climbs again afterward','The flat part lines up with melting'],
+    guessPresets:['Temperature keeps rising the whole time, no matter what','Temperature stays flat while the ice is actually melting'],
+    watch:['Solid ice: temperature rises steadily','During melting: temperature stays flat','All liquid: temperature rises again','The flat section is exactly at the melting point'],
+    sentenceTemplate:'While ice is melting, the heat energy goes into changing its state, not raising its ___ \u2014 so the graph goes flat.',
+    wordbank:['temperature','mass','colour','shape'],
+    correctWord:'temperature',
+    labelA:{text:'Temperature rises steadily throughout', key:'rises'},
+    labelB:{text:'Temperature plateaus (flat) while melting', key:'plateau'},
+    correctLabel:'plateau',
+    feedback:'The graph goes flat while the ice is melting \u2014 the heat energy is being used to change the ice from solid to liquid, not to raise the temperature. Once it\u2019s fully melted, the temperature starts climbing again.'
+  },
+  {
+    id:'bloodiron', zone:'mindlab', tier:'y9', emoji:'\ud83e\ude78', title:'The Iron in Your Blood',
+    story:"A nurse explains why blood looks red: a molecule called haemoglobin carries oxygen around your body, and right at its centre sits a single atom of a very familiar metal.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="55" r="40" fill="#D85A30" opacity="0.25"/>
+      <circle cx="150" cy="55" r="10" fill="#7A7266"/>
+      <text x="150" y="59" text-anchor="middle" font-size="9" fill="#fff">Fe</text>
+      <text x="150" y="110" text-anchor="middle" font-size="10" fill="#6B6459">One iron atom at the centre of haemoglobin</text>
+    </svg>`,
+    notice:['Blood looks red','Haemoglobin carries oxygen around the body','A metal atom sits at its centre','That same metal is used to build ships'],
+    guessPresets:['Blood is red because of a gas, not a metal','Blood is red because of an iron atom inside haemoglobin'],
+    watch:['Iron atom: sits at haemoglobin\u2019s centre','Iron helps haemoglobin grab and carry oxygen','It\u2019s the exact same element as ship rivets','Different form, same element'],
+    sentenceTemplate:'The metal element at the centre of haemoglobin, which helps give blood its colour, is ___.',
+    wordbank:['iron','oxygen','carbon','calcium'],
+    correctWord:'iron',
+    labelA:{text:'Iron (a metal element)', key:'iron'},
+    labelB:{text:'Oxygen (a gas element)', key:'oxygen'},
+    correctLabel:'iron',
+    feedback:'Iron is the metal element at the centre of haemoglobin \u2014 the same element that makes up rivets and steel, just arranged completely differently. It\u2019s what lets haemoglobin grab hold of oxygen and carry it around the body.'
+  },
+  {
+    id:'heartrategraph', zone:'mindlab', tier:'y9', emoji:'\ud83d\udcc9', title:'Reading a Heart Rate Graph',
+    story:"A fitness tracker plots heart rate against time during a run. The line climbs steeply once running starts, stays high through the run, then slowly drops back down during the cool-down.",
+    diagram:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+      <line x1="30" y1="100" x2="270" y2="100" stroke="#B8AF95" stroke-width="1"/>
+      <line x1="30" y1="100" x2="30" y2="15" stroke="#B8AF95" stroke-width="1"/>
+      <path d="M30 85 L90 25 L180 25 L250 75" fill="none" stroke="#D85A30" stroke-width="2.5"/>
+      <text x="60" y="112" text-anchor="middle" font-size="9" fill="#6B6459">Rest</text>
+      <text x="135" y="112" text-anchor="middle" font-size="9" fill="#6B6459">Running</text>
+      <text x="230" y="112" text-anchor="middle" font-size="9" fill="#6B6459">Cool-down</text>
+    </svg>`,
+    notice:['Line climbs steeply when running starts','Line stays high during the run','Line drops during cool-down','Never drops instantly back to resting'],
+    guessPresets:['Heart rate falls the moment you start running','Heart rate rises during exercise and falls slowly afterward'],
+    watch:['Resting: heart rate low and steady','Running: heart rate climbs and stays high','Cool-down: heart rate falls gradually','The drop is slower than the climb'],
+    sentenceTemplate:'During exercise, heart rate ___ to pump more oxygen to your muscles, then falls slowly afterward.',
+    wordbank:['rises','falls','stays exactly the same','stops'],
+    correctWord:'rises',
+    labelA:{text:'Heart rate rises during exercise', key:'rises'},
+    labelB:{text:'Heart rate falls during exercise', key:'falls'},
+    correctLabel:'rises',
+    feedback:'Heart rate rises during exercise to pump more oxygen to your muscles, then falls slowly during the cool-down rather than dropping instantly. Reading where a graph climbs, plateaus, or falls is exactly the skill examiners test with these kinds of graphs.'
   }
 ];
 const ZONES = [
@@ -1026,7 +1511,181 @@ const WORDPROBLEMS = [
   { id:'wp-m2', zone:'mindlab', emoji:'\ud83d\udca6', lines:['Running fast makes your skin sweaty.','It dries off and skin goes back to normal.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Sweat is just water leaving the body. Drying it changes nothing new.' },
   { id:'wp-m3', zone:'mindlab', emoji:'\ud83c\udf5e', lines:['A cracker sits in your mouth a while.','It slowly starts to taste sweet.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'Saliva breaks the starch into sugar. That\u2019s a brand new substance.' },
   { id:'wp-m4', zone:'mindlab', emoji:'\ud83c\udf7d\ufe0f', lines:['Food sits in your stomach after a meal.','Acid breaks it down into something new.'], question:'Physical change or chemical change?', answerKey:'chemical', explain:'Digestion makes new substances your body can use. It can\u2019t be undone.' },
-  { id:'wp-m5', zone:'mindlab', emoji:'\ud83d\ude33', lines:['Cheeks turn red when you feel shy.','Blood vessels widen, then narrow back down.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Same blood, same skin, the whole time. Just wider vessels for a moment.' }
+  { id:'wp-m5', zone:'mindlab', emoji:'\ud83d\ude33', lines:['Cheeks turn red when you feel shy.','Blood vessels widen, then narrow back down.'], question:'Physical change or chemical change?', answerKey:'physical', explain:'Same blood, same skin, the whole time. Just wider vessels for a moment.' },
+
+  // Year 9 depth layer (Phase 6.1) \u2014 acid/alkali, element/compound/mixture, reaction rate, conservation of mass
+  { id:'wp-y9k1', zone:'kitchen', emoji:'\ud83c\udf4b', lines:['Lemon juice tastes very sour.','It sits low on the pH scale.'], question:'Acid or alkali?', answerKey:'acid', explain:'Low pH means acid. Sour taste is a classic acid clue.',
+    choices:[{key:'acid',label:'Acid'},{key:'alkali',label:'Alkali'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="30" width="240" height="20" rx="10" fill="#EFE6D3" stroke="#B8AF95" stroke-width="1"/>
+      <rect x="30" y="30" width="40" height="20" rx="10" fill="#D85A30"/>
+      <circle cx="48" cy="40" r="6" fill="#4A4038"/>
+      <text x="48" y="65" text-anchor="middle" font-size="10" fill="#6B6459">Lemon juice</text>
+      <text x="150" y="90" text-anchor="middle" font-size="10" fill="#C9821F">pH scale: 0 (acid) \u2014 7 (neutral) \u2014 14 (alkali)</text>
+    </svg>` },
+  { id:'wp-y9k2', zone:'kitchen', emoji:'\ud83c\udf75', lines:['Sugar is stirred into hot tea.','It disappears almost instantly.'], question:'Faster or slower reaction rate?', answerKey:'faster', explain:'Heat gives particles more energy. More energy means faster dissolving.',
+    choices:[{key:'faster',label:'Faster'},{key:'slower',label:'Slower'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <rect x="190" y="20" width="80" height="70" rx="6" fill="#F5D9B0" stroke="#C9821F" stroke-width="2"/>
+      <circle cx="210" cy="40" r="2.5" fill="#B8AF95"/><circle cx="235" cy="55" r="2.5" fill="#B8AF95"/>
+      <circle cx="255" cy="35" r="2.5" fill="#B8AF95"/><circle cx="220" cy="70" r="2.5" fill="#B8AF95"/>
+      <circle cx="250" cy="75" r="2.5" fill="#B8AF95"/>
+      <text x="230" y="102" text-anchor="middle" font-size="10" fill="#6B6459">Hot tea: particles move fast</text>
+    </svg>` },
+  { id:'wp-y9t1', zone:'titanic', emoji:'\ud83d\udd29', lines:['A rivet is pure iron.','Every atom in it is the same type.'], question:'Element or compound?', answerKey:'element', explain:'One atom type only means it is an element, not a compound.',
+    choices:[{key:'element',label:'Element'},{key:'compound',label:'Compound'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="50" r="38" fill="#DDE6EA" stroke="#3E6680" stroke-width="1"/>
+      <circle cx="135" cy="40" r="6" fill="#7A7266"/><circle cx="165" cy="40" r="6" fill="#7A7266"/>
+      <circle cx="150" cy="60" r="6" fill="#7A7266"/><circle cx="135" cy="65" r="6" fill="#7A7266"/>
+      <text x="150" y="102" text-anchor="middle" font-size="10" fill="#6B6459">Same atom, repeated \u2014 an element</text>
+    </svg>` },
+  { id:'wp-y9t2', zone:'titanic', emoji:'\u2696\ufe0f', lines:['Coal and oxygen react in the furnace.','Carbon dioxide and ash are left.'], question:'Mass created, or mass conserved?', answerKey:'conserved', explain:'Every atom is still there, just rearranged. Nothing is created or destroyed.',
+    choices:[{key:'created',label:'Created'},{key:'conserved',label:'Conserved'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <path d="M150 25 L110 55 L190 55 Z" fill="none" stroke="#C9821F" stroke-width="2"/>
+      <line x1="150" y1="25" x2="150" y2="15" stroke="#C9821F" stroke-width="2"/>
+      <rect x="70" y="55" width="60" height="14" rx="3" fill="#4A4038"/>
+      <rect x="170" y="55" width="60" height="14" rx="3" fill="#6B6459"/>
+      <text x="100" y="88" text-anchor="middle" font-size="10" fill="#6B6459">Coal + oxygen</text>
+      <text x="200" y="88" text-anchor="middle" font-size="10" fill="#6B6459">CO2 + ash</text>
+      <text x="150" y="105" text-anchor="middle" font-size="10" fill="#C9821F">Balanced \u2014 same total mass</text>
+    </svg>` },
+  { id:'wp-y9p1', zone:'pixel', emoji:'\ud83e\uddf1', lines:['A potion block has two parts joined together.','It fizzes and reacts when cracked.'], question:'Element or compound?', answerKey:'compound', explain:'Two different parts joined together is the sign of a compound.',
+    choices:[{key:'element',label:'Element'},{key:'compound',label:'Compound'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="130" cy="50" r="38" fill="#9FC98A" stroke="#3E6680" stroke-width="1"/>
+      <circle cx="118" cy="40" r="6" fill="#3E6680"/><circle cx="140" cy="40" r="5" fill="#E8899B"/>
+      <circle cx="118" cy="62" r="5" fill="#E8899B"/><circle cx="140" cy="62" r="6" fill="#3E6680"/>
+      <text x="130" y="102" text-anchor="middle" font-size="10" fill="#6B6459">Two atom types joined \u2014 a compound</text>
+    </svg>` },
+  { id:'wp-y9p2', zone:'pixel', emoji:'\ud83e\uddea', lines:['A potion block fizzes and shrinks.','Gas escapes into the air.'], question:'Mass created, or mass conserved?', answerKey:'conserved', explain:'The missing mass left as gas. Nothing actually vanished.',
+    choices:[{key:'created',label:'Created'},{key:'conserved',label:'Conserved'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <path d="M150 25 L110 55 L190 55 Z" fill="none" stroke="#C9821F" stroke-width="2"/>
+      <line x1="150" y1="25" x2="150" y2="15" stroke="#C9821F" stroke-width="2"/>
+      <rect x="75" y="55" width="55" height="14" rx="3" fill="#9FC98A"/>
+      <rect x="170" y="55" width="60" height="14" rx="3" fill="#EAF3F8" stroke="#3E6680" stroke-width="1"/>
+      <text x="100" y="88" text-anchor="middle" font-size="10" fill="#6B6459">Potion mix</text>
+      <text x="200" y="88" text-anchor="middle" font-size="10" fill="#6B6459">Gas + residue</text>
+      <text x="150" y="105" text-anchor="middle" font-size="10" fill="#C9821F">Balanced \u2014 same total mass</text>
+    </svg>` },
+  { id:'wp-y9i1', zone:'icekingdom', emoji:'\ud83e\udd76', lines:['A potion sits in freezing cold air.','It barely fizzes at all.'], question:'Faster or slower reaction rate?', answerKey:'slower', explain:'Cold particles have less energy. Less energy means a slower reaction.',
+    choices:[{key:'faster',label:'Faster'},{key:'slower',label:'Slower'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="20" width="80" height="70" rx="6" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="50" cy="45" r="2.5" fill="#B8AF95"/><circle cx="65" cy="65" r="2.5" fill="#B8AF95"/>
+      <text x="70" y="102" text-anchor="middle" font-size="10" fill="#6B6459">Cold: particles move slowly</text>
+    </svg>` },
+  { id:'wp-y9i2', zone:'icekingdom', emoji:'\ud83e\udea3', lines:['Salt water needs extra-cold air to freeze.','Pure water freezes at 0\u00b0C.'], question:'Mixture or pure substance?', answerKey:'mixture', explain:'Salt water can be separated back into salt and water, so it is a mixture.',
+    choices:[{key:'mixture',label:'Mixture'},{key:'pure',label:'Pure substance'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <path d="M200 20 L200 85 Q200 95 210 95 L250 95 Q260 95 260 85 L260 20" fill="#DDE6EA" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="215" cy="45" r="2" fill="#B8AF95"/><circle cx="230" cy="60" r="2" fill="#B8AF95"/>
+      <circle cx="245" cy="40" r="2" fill="#B8AF95"/><circle cx="225" cy="75" r="2" fill="#B8AF95"/>
+      <text x="230" y="105" text-anchor="middle" font-size="10" fill="#6B6459">Salt scattered through water \u2014 a mixture</text>
+    </svg>` },
+  { id:'wp-y9m1', zone:'mindlab', emoji:'\ud83e\udea8', lines:['Stomach acid sits near pH 1\u20132.','That is far below neutral pH 7.'], question:'Acid or alkali?', answerKey:'acid', explain:'A pH well below 7 always means a strong acid.',
+    choices:[{key:'acid',label:'Acid'},{key:'alkali',label:'Alkali'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="30" width="240" height="20" rx="10" fill="#EFE6D3" stroke="#B8AF95" stroke-width="1"/>
+      <rect x="30" y="30" width="25" height="20" rx="10" fill="#D85A30"/>
+      <circle cx="42" cy="40" r="6" fill="#4A4038"/>
+      <text x="42" y="65" text-anchor="middle" font-size="10" fill="#6B6459">Stomach acid</text>
+      <text x="150" y="90" text-anchor="middle" font-size="10" fill="#C9821F">pH scale: 0 (acid) \u2014 7 (neutral) \u2014 14 (alkali)</text>
+    </svg>` },
+  { id:'wp-y9m2', zone:'mindlab', emoji:'\ud83c\udf7d\ufe0f', lines:['A meal is digested over several hours.','Nutrients and waste come out.'], question:'Mass created, or mass conserved?', answerKey:'conserved', explain:'Every atom from the meal ends up as nutrients or waste. None is destroyed.',
+    choices:[{key:'created',label:'Created'},{key:'conserved',label:'Conserved'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <path d="M150 25 L110 55 L190 55 Z" fill="none" stroke="#C9821F" stroke-width="2"/>
+      <line x1="150" y1="25" x2="150" y2="15" stroke="#C9821F" stroke-width="2"/>
+      <rect x="75" y="55" width="55" height="14" rx="3" fill="#E8CB93"/>
+      <rect x="170" y="55" width="60" height="14" rx="3" fill="#D9A94A"/>
+      <text x="100" y="88" text-anchor="middle" font-size="10" fill="#6B6459">Food + acid</text>
+      <text x="200" y="88" text-anchor="middle" font-size="10" fill="#6B6459">Nutrients + waste</text>
+      <text x="150" y="105" text-anchor="middle" font-size="10" fill="#C9821F">Balanced \u2014 same total mass</text>
+    </svg>` },
+
+  // Year 9 depth layer, batch 2 (Phase 6.2) \u2014 atomic structure, periodic table, bonding, separation, data interpretation
+  { id:'wp-y9k3', zone:'kitchen', emoji:'\ud83e\uddc2', lines:['Sand is stirred into water, never dissolves.','A paper filter is used to separate it out.'], question:'Filtration or evaporation?', answerKey:'filtration', explain:'Sand never dissolved, so a filter catches it. Evaporation is for dissolved substances.',
+    choices:[{key:'filtration',label:'Filtration'},{key:'evaporation',label:'Evaporation'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <path d="M110 15 L150 15 L170 65 L90 65 Z" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <circle cx="120" cy="30" r="2" fill="#B8895A"/><circle cx="135" cy="35" r="2" fill="#B8895A"/>
+      <text x="130" y="85" text-anchor="middle" font-size="10" fill="#6B6459">Paper filter</text>
+      <text x="130" y="100" text-anchor="middle" font-size="10" fill="#6B6459">catches undissolved sand</text>
+    </svg>` },
+  { id:'wp-y9k4', zone:'kitchen', emoji:'\u26a1', lines:['Salt water lights up a test bulb.','Sugar water does nothing at all.'], question:'Ionic or covalent?', answerKey:'ionic', explain:'Ionic salt splits into charged particles that can carry current.',
+    choices:[{key:'ionic',label:'Ionic'},{key:'covalent',label:'Covalent'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="50" r="18" fill="#D9724B"/><text x="150" y="38" text-anchor="middle" font-size="9" fill="#fff">+</text>
+      <circle cx="195" cy="50" r="22" fill="#3E6680"/><text x="195" y="38" text-anchor="middle" font-size="9" fill="#fff">\u2212</text>
+      <text x="172" y="95" text-anchor="middle" font-size="10" fill="#6B6459">Charged particles carry current</text>
+    </svg>` },
+  { id:'wp-y9t3', zone:'titanic', emoji:'\u269b\ufe0f', lines:['An iron atom has a tiny, dense centre.','Light particles orbit around the outside.'], question:'Nucleus or shells?', answerKey:'nucleus', explain:'Protons and neutrons pack into the nucleus, almost all the mass.',
+    choices:[{key:'nucleus',label:'Nucleus'},{key:'shells',label:'Shells'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="50" r="42" fill="none" stroke="#7A7266" stroke-width="1" stroke-dasharray="3,3"/>
+      <circle cx="150" cy="50" r="12" fill="#4A4038"/>
+      <circle cx="150" cy="8" r="3" fill="#5B93B0"/>
+      <text x="150" y="95" text-anchor="middle" font-size="10" fill="#6B6459">Nucleus at centre, electrons orbiting</text>
+    </svg>` },
+  { id:'wp-y9t4', zone:'titanic', emoji:'\ud83d\udccb', lines:['Iron, copper and nickel are all used on the ship.','All three are shiny and can be shaped.'], question:'Metal or non-metal?', answerKey:'metal', explain:'All three sit together on the metal side of the periodic table.',
+    choices:[{key:'metal',label:'Metal'},{key:'nonmetal',label:'Non-metal'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="20" width="170" height="65" rx="6" fill="#DDE6EA" stroke="#3E6680" stroke-width="1"/>
+      <text x="115" y="15" text-anchor="middle" font-size="10" fill="#6B6459">Metals</text>
+      <rect x="215" y="20" width="55" height="65" rx="6" fill="#F5D9B0" stroke="#C9821F" stroke-width="1"/>
+      <text x="242" y="15" text-anchor="middle" font-size="10" fill="#6B6459">Non-metals</text>
+    </svg>` },
+  { id:'wp-y9p3', zone:'pixel', emoji:'\ud83c\udfae', lines:['A heavy core block stays locked in the centre.','Light pieces zoom around it in rings.'], question:'Nucleus or shells?', answerKey:'nucleus', explain:'The heavy locked core matches the nucleus; fast rings match electrons.',
+    choices:[{key:'nucleus',label:'Nucleus'},{key:'shells',label:'Shells'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="50" r="38" fill="none" stroke="#9FC98A" stroke-width="1" stroke-dasharray="3,3"/>
+      <rect x="138" y="38" width="24" height="24" rx="4" fill="#D9724B"/>
+      <circle cx="150" cy="14" r="3" fill="#5B93B0"/>
+      <text x="150" y="95" text-anchor="middle" font-size="10" fill="#6B6459">Core = nucleus, ring pieces = electrons</text>
+    </svg>` },
+  { id:'wp-y9p4', zone:'pixel', emoji:'\ud83e\udd1d', lines:['Two matching blocks fuse, sharing a glow.','Both stay perfectly neutral afterward.'], question:'Covalent or ionic?', answerKey:'covalent', explain:'Sharing electrons between atoms is covalent bonding.',
+    choices:[{key:'covalent',label:'Covalent'},{key:'ionic',label:'Ionic'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="130" cy="50" r="26" fill="#9FC98A"/>
+      <circle cx="170" cy="50" r="26" fill="#9FC98A"/>
+      <circle cx="150" cy="50" r="8" fill="#5B93B0"/>
+      <text x="150" y="95" text-anchor="middle" font-size="10" fill="#6B6459">Shared glow \u2014 both stay neutral</text>
+    </svg>` },
+  { id:'wp-y9i3', zone:'icekingdom', emoji:'\ud83e\uddea', lines:['A filter does nothing to salty fountain water.','Boiling then cooling the steam leaves pure water.'], question:'Distillation or filtration?', answerKey:'distillation', explain:'Dissolved salt needs distillation \u2014 filtration only catches undissolved solids.',
+    choices:[{key:'distillation',label:'Distillation'},{key:'filtration',label:'Filtration'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="55" width="55" height="32" rx="4" fill="#DDE6EA" stroke="#3E6680" stroke-width="2"/>
+      <path d="M88 58 Q130 28 165 36" fill="none" stroke="#B8AF95" stroke-width="2" stroke-dasharray="3,3"/>
+      <rect x="185" y="60" width="45" height="25" rx="4" fill="#EAF3F8" stroke="#3E6680" stroke-width="2"/>
+      <text x="150" y="102" text-anchor="middle" font-size="10" fill="#6B6459">Steam rises, cools, collects pure</text>
+    </svg>` },
+  { id:'wp-y9i4', zone:'icekingdom', emoji:'\ud83d\udcc8', lines:['A temperature graph climbs, then goes flat.','It climbs again once fully melted.'], question:'Rises steadily, or plateaus while melting?', answerKey:'plateau', explain:'Heat energy goes into melting, not raising temperature, during the flat part.',
+    choices:[{key:'rises',label:'Rises steadily'},{key:'plateau',label:'Plateaus'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <line x1="30" y1="90" x2="270" y2="90" stroke="#B8AF95" stroke-width="1"/>
+      <line x1="30" y1="90" x2="30" y2="10" stroke="#B8AF95" stroke-width="1"/>
+      <path d="M30 80 L90 45 L190 45 L250 15" fill="none" stroke="#3E6680" stroke-width="2.5"/>
+      <text x="140" y="38" text-anchor="middle" font-size="10" fill="#C9821F">Flat = melting</text>
+    </svg>` },
+  { id:'wp-y9m3', zone:'mindlab', emoji:'\ud83e\ude78', lines:['Haemoglobin carries oxygen in the blood.','A single metal atom sits at its centre.'], question:'Iron or oxygen?', answerKey:'iron', explain:'Iron sits at haemoglobin\u2019s centre and helps carry oxygen.',
+    choices:[{key:'iron',label:'Iron'},{key:'oxygen',label:'Oxygen'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="50" r="35" fill="#D85A30" opacity="0.25"/>
+      <circle cx="150" cy="50" r="9" fill="#7A7266"/>
+      <text x="150" y="53" text-anchor="middle" font-size="8" fill="#fff">Fe</text>
+      <text x="150" y="98" text-anchor="middle" font-size="10" fill="#6B6459">Iron atom at haemoglobin\u2019s centre</text>
+    </svg>` },
+  { id:'wp-y9m4', zone:'mindlab', emoji:'\ud83d\udcc9', lines:['A heart rate graph climbs steeply as running starts.','It falls slowly during the cool-down.'], question:'Rises or falls during exercise?', answerKey:'rises', explain:'Heart rate rises during exercise to pump more oxygen to muscles.',
+    choices:[{key:'rises',label:'Rises'},{key:'falls',label:'Falls'}],
+    diagramSvg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg">
+      <line x1="30" y1="90" x2="270" y2="90" stroke="#B8AF95" stroke-width="1"/>
+      <line x1="30" y1="90" x2="30" y2="10" stroke="#B8AF95" stroke-width="1"/>
+      <path d="M30 75 L90 20 L180 20 L250 65" fill="none" stroke="#D85A30" stroke-width="2.5"/>
+      <text x="150" y="100" text-anchor="middle" font-size="10" fill="#6B6459">Rises with exercise, falls in cool-down</text>
+    </svg>` }
 ];
 
 /* ============ ZOOM IN LINKS (Phase 5.3) ============
@@ -1068,7 +1727,31 @@ const ZOOM_LINKS = {
   sweating: 'wp-m2',
   cracker: 'wp-m3',
   stomachacid: 'wp-m4',
-  blushing: 'wp-m5'
+  blushing: 'wp-m5',
+
+  // Year 9 depth layer (Phase 6.1)
+  lemonsoda: 'wp-y9k1',
+  warmtea: 'wp-y9k2',
+  rivetmetal: 'wp-y9t1',
+  coalequation: 'wp-y9t2',
+  pixelblocks: 'wp-y9p1',
+  potionequation: 'wp-y9p2',
+  coldreaction: 'wp-y9i1',
+  saltpurewater: 'wp-y9i2',
+  stomachph: 'wp-y9m1',
+  digestequation: 'wp-y9m2',
+
+  // Year 9 depth layer, batch 2 (Phase 6.2)
+  filtersand: 'wp-y9k3',
+  conductsalt: 'wp-y9k4',
+  ironatom: 'wp-y9t3',
+  metaltable: 'wp-y9t4',
+  pixelatombuild: 'wp-y9p3',
+  sharesteal: 'wp-y9p4',
+  distillfountain: 'wp-y9i3',
+  meltgraph: 'wp-y9i4',
+  bloodiron: 'wp-y9m3',
+  heartrategraph: 'wp-y9m4'
 };
 
 const STORAGE_KEY = 'chem-lab-v1';
@@ -1096,23 +1779,33 @@ let examState = { mode:null, notice:'', guess:'', watch:'', explain:'', label:''
 /* ============ HOME VIEW ============ */
 const XP_PER_MISSION = 20;
 
+/* Year 8 zone/completion badges only ever count tier:'y8' (i.e. no tier) missions,
+   so adding the Year 9 layer doesn't retroactively make these harder to earn. */
+const isY8 = m => m.tier !== 'y9';
+/* Returns true once every Year 8 mission in a zone is done \u2014 the unlock condition
+   for that zone's Year 9 missions (see renderHome). */
+function zoneY8Done(zoneId){
+  return MISSIONS.filter(m=>m.zone===zoneId && isY8(m)).every(m=>getM(m.id).done);
+}
 const BADGES = [
   { id:'kitchen', emoji:'🍳', label:'Kitchen Apprentice',
-    check: () => MISSIONS.filter(m=>m.zone==='kitchen').every(m=>getM(m.id).done) },
+    check: () => MISSIONS.filter(m=>m.zone==='kitchen' && isY8(m)).every(m=>getM(m.id).done) },
   { id:'titanic', emoji:'⚙️', label:'Engine Room Cadet',
-    check: () => MISSIONS.filter(m=>m.zone==='titanic').every(m=>getM(m.id).done) },
+    check: () => MISSIONS.filter(m=>m.zone==='titanic' && isY8(m)).every(m=>getM(m.id).done) },
   { id:'pixel', emoji:'🍄', label:'Pixel Explorer',
-    check: () => MISSIONS.filter(m=>m.zone==='pixel').every(m=>getM(m.id).done) },
+    check: () => MISSIONS.filter(m=>m.zone==='pixel' && isY8(m)).every(m=>getM(m.id).done) },
   { id:'icekingdom', emoji:'❄️', label:'Frost Keeper',
-    check: () => MISSIONS.filter(m=>m.zone==='icekingdom').every(m=>getM(m.id).done) },
+    check: () => MISSIONS.filter(m=>m.zone==='icekingdom' && isY8(m)).every(m=>getM(m.id).done) },
   { id:'mindlab', emoji:'🧠', label:'Body Chemist',
-    check: () => MISSIONS.filter(m=>m.zone==='mindlab').every(m=>getM(m.id).done) },
+    check: () => MISSIONS.filter(m=>m.zone==='mindlab' && isY8(m)).every(m=>getM(m.id).done) },
   { id:'detective', emoji:'🧪', label:'Change Detective',
     check: () => MISSIONS.filter(m=>getM(m.id).labelFirstCorrect===true).length>=5 },
   { id:'artist', emoji:'🎨', label:'Sketch Artist',
     check: () => { let c=0; MISSIONS.forEach(m=>{const ms=getM(m.id); if(ms.sketchBefore)c++; if(ms.sketchAfter)c++;}); return c>=3; } },
+  { id:'y9detective', emoji:'\ud83e\uddec', label:'Chemistry Detective',
+    check: () => MISSIONS.filter(m=>m.tier==='y9').every(m=>getM(m.id).done) },
   { id:'fullsteam', emoji:'🚢', label:'Full Steam Ahead',
-    check: () => MISSIONS.every(m=>getM(m.id).done) }
+    check: () => MISSIONS.filter(isY8).every(m=>getM(m.id).done) }
 ];
 
 function renderHome(){
@@ -1155,8 +1848,24 @@ function renderHome(){
       <div class="grid"></div>
     `;
     const grid = section.querySelector('.grid');
+    const zoneHasY9 = zoneMissions.some(m=>m.tier==='y9');
+    const zoneUnlockedY9 = zoneY8Done(zone.id);
+    let dividerShown = false;
 
     zoneMissions.forEach(m=>{
+      const isY9Mission = m.tier==='y9';
+      const y9Locked = isY9Mission && !zoneUnlockedY9;
+
+      if(isY9Mission && zoneHasY9 && !dividerShown){
+        dividerShown = true;
+        const divider = document.createElement('div');
+        divider.className = 'y9divider';
+        divider.innerHTML = zoneUnlockedY9
+          ? '⚛️ Year 9 depth \u2014 same zone, deeper question'
+          : '⚛️ Year 9 depth \u2014 unlocks once every mission above is done';
+        grid.appendChild(divider);
+      }
+
       const ms = getM(m.id);
       let badgeClass='notstarted', badgeText='Not started';
       if(ms.done){ badgeClass='done'; badgeText='Done ✓'; }
@@ -1167,8 +1876,9 @@ function renderHome(){
       else if(ms.labelFirstCorrect===false) trafficDot = '<div class="trafficdot yellow"></div>';
 
       const card = document.createElement('div');
-      card.className='rcard';
-      card.onclick=()=>openMission(m.id);
+      card.className='rcard' + (y9Locked?' locked':'');
+      card.onclick = y9Locked ? null : (()=>openMission(m.id));
+      const tierPill = isY9Mission ? '<span class="tierpill">Year 9</span>' : '';
       let examRow = '';
       if(ms.done){
         const csLocked = !ms.fadingDone;
@@ -1181,10 +1891,16 @@ function renderHome(){
           </div>
         </div>`;
       }
-      card.innerHTML = `
+      card.innerHTML = y9Locked ? `
+        <div class="emoji">🔒</div>
+        <div class="info">
+          <h3>${m.title} ${tierPill}</h3>
+          <p class="lockedmsg">Finish all Year 8 missions in this zone first</p>
+        </div>
+      ` : `
         <div class="emoji">${m.emoji}</div>
         <div class="info">
-          <h3>${m.title}</h3>
+          <h3>${m.title} ${tierPill}</h3>
           <p>${badgeText==='Not started' ? 'Tap to start' : (ms.done ? 'Mission complete' : 'Tap to continue')}</p>
           ${examRow}
         </div>
@@ -1264,7 +1980,7 @@ function renderFadingArea(m){
     <div class="examhint">${m.sentenceTemplate.replace('___','______')}</div>
     <textarea class="examblank" rows="1" placeholder="Type the missing word..." oninput="examState.explain=this.value">${examState.explain}</textarea>
 
-    <div class="examq">Physical change or chemical change? Why?</div>
+    <div class="examq">${m.labelA.text} or ${m.labelB.text}? Why?</div>
     <textarea class="examblank" rows="2" placeholder="Your answer..." oninput="examState.label=this.value">${examState.label}</textarea>
 
     <button class="homebtn" onclick="checkFadingWork()">✅ Check My Work</button>
@@ -1420,25 +2136,29 @@ function renderZoomArea(){
   const wpId = ZOOM_LINKS[currentMissionId];
   if(!wpId){ wrap.innerHTML=''; return; }
   const wp = WORDPROBLEMS.find(w=>w.id===wpId);
+  // Older (Year 8) word problems don't define choices \u2014 default to Physical/Chemical.
+  const choices = wp.choices || [{key:'physical',label:'Physical'},{key:'chemical',label:'Chemical'}];
 
   if(!zoomState.open){
     wrap.innerHTML = `<button class="zoombtn" onclick="toggleZoom()">\ud83d\udd2c Zoom In \u2014 see the tiny bits</button>`;
     return;
   }
 
-  let picksHtml = `<div class="zoomchoices">
-      <div class="zoomchoice ${zoomState.picked==='physical'?(wp.answerKey==='physical'?'right':'wrong'):''}" onclick="pickZoomAnswer('physical')">Physical</div>
-      <div class="zoomchoice ${zoomState.picked==='chemical'?(wp.answerKey==='chemical'?'right':'wrong'):''}" onclick="pickZoomAnswer('chemical')">Chemical</div>
-    </div>`;
+  let picksHtml = `<div class="zoomchoices">` + choices.map(c=>
+      `<div class="zoomchoice ${zoomState.picked===c.key?(wp.answerKey===c.key?'right':'wrong'):''}" onclick="pickZoomAnswer('${c.key}')">${c.label}</div>`
+    ).join('') + `</div>`;
 
   let explainHtml = '';
   if(zoomState.picked){
     explainHtml = `<div class="zoomexplain"><b>${zoomState.picked===wp.answerKey?'Yes!':'Close \u2014 here\u2019s the trick:'}</b> ${wp.explain}</div>`;
   }
 
+  // Older word problems have no custom diagramSvg \u2014 fall back to the physical/chemical particle animation.
+  const diagramHtml = wp.diagramSvg || generateParticleSVG(wp.answerKey);
+
   wrap.innerHTML = `<div class="zoompanel">
       <div class="zoomkicker">\ud83d\udd2c ZOOM IN \u2014 TRY THIS ONE</div>
-      <div class="zoom-diagram-box">${generateParticleSVG(wp.answerKey)}</div>
+      <div class="zoom-diagram-box">${diagramHtml}</div>
       <div class="zoomline">${wp.lines[0]}</div>
       <div class="zoomline">${wp.lines[1]}</div>
       <div class="zoomq">${wp.question}</div>
@@ -1791,7 +2511,7 @@ function renderCookbook(){
     </div>`;
     return;
   }
-  let html = `<button class="nextbtn" style="margin-bottom:18px;" onclick="exportAnkiCSV()">⬇️ Export ${done.length} recipe${done.length>1?'s':''} to Anki</button>`;
+  let html = `<button class="nextbtn" style="margin-bottom:18px;" onclick="exportAnkiCSV()">⬇️ Export ${done.length} recipe${done.length>1?'s':''} to Flashcards</button>`;
   done.forEach(m=>{
     const ms = getM(m.id);
     const zone = ZONES.find(z=>z.id===m.zone);
@@ -1804,31 +2524,35 @@ function renderCookbook(){
   area.innerHTML = html;
 }
 
-/* ============ ANKI CSV EXPORT ============ */
+/* ============ FLASHCARD CSV EXPORT (for Noji, or any CSV-importing app) ============
+   Plain 2-column CSV: front, back. No HTML — Noji's importer shows raw text, so real
+   line breaks (valid inside a quoted CSV field) are used instead of <br>/<b> tags.
+================================================== */
 function csvField(text){
-  return '"' + String(text).replace(/"/g,'""').replace(/\n/g,'<br>') + '"';
+  return '"' + String(text).replace(/"/g,'""') + '"';
 }
 
 function exportAnkiCSV(){
   const rows = [];
   MISSIONS.filter(m=>getM(m.id).done).forEach(m=>{
     const ms = getM(m.id);
+    const zone = ZONES.find(z=>z.id===m.zone);
     const noticeText = ms.notice.map(i=>m.notice[i]).join(', ') || '—';
 
     // Card 1: concept check (physical/chemical, solution/suspension, etc.)
-    const conceptFront = `Kitchen Chemistry — ${m.title}: ${m.labelA.text} or ${m.labelB.text}?`;
+    const conceptFront = `${zone.title} — ${m.title}: ${m.labelA.text} or ${m.labelB.text}?`;
     const correctLabelText = m.correctLabel===m.labelA.key ? m.labelA.text : m.labelB.text;
-    const conceptBack = `${correctLabelText}<br><br>${m.feedback}`;
+    const conceptBack = `${correctLabelText}\n\n${m.feedback}`;
     rows.push([conceptFront, conceptBack]);
 
     // Card 2: recall what happened
-    const watchFront = `Kitchen Chemistry — ${m.title}: What did you notice happen?`;
+    const watchFront = `${zone.title} — ${m.title}: What did you notice happen?`;
     const watchBack = noticeText;
     rows.push([watchFront, watchBack]);
 
     // Card 3: explain the sentence
-    const explainFront = `Kitchen Chemistry — ${m.title}: Finish the sentence — ${m.sentenceTemplate}`;
-    const explainBack = m.sentenceTemplate.replace('___', '<b>'+m.correctWord+'</b>');
+    const explainFront = `${zone.title} — ${m.title}: Finish the sentence — ${m.sentenceTemplate}`;
+    const explainBack = m.sentenceTemplate.replace('___', m.correctWord.toUpperCase());
     rows.push([explainFront, explainBack]);
   });
 
@@ -1837,7 +2561,7 @@ function exportAnkiCSV(){
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'kitchen-chemistry-lab-flashcards.csv';
+  a.download = 'chem-lab-sketchbook-flashcards.csv';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
